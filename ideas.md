@@ -10,9 +10,12 @@
 
 ## Hypothesis
 
-+ Relationsships (Intensity of feelings of non-standard couples) show different destinies depending on the conditions:
++ Relationships (Intensity of feelings of non-standard couples) show different destinies depending on the conditions:
   + **Converges** to one fixed point (most advantageous for both), or two (one benefits one or the other more) if the appeal/insecurity is unbalanced (Game theory??)
   + Enters **cycles** if there are periodic external influences (weekly, monthly, yearly)
   + **Chaos** if n>2, or noisy external influences
 
 **Non-standard couples are insecure and unbiased*
+
+
+Check Predator Prey Model
