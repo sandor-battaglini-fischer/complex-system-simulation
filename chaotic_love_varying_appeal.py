@@ -4,14 +4,9 @@ from scipy.integrate import odeint
 from scipy.signal import find_peaks
 
 
-def time_varying_appeal(t, A1, epsilon, omega):
-    return A1 * (1 + epsilon * np.sin(omega * t))
-
-def love_dynamics(y, t, p, A1, epsilon, omega):
+def love_dynamics(y, t, p, epsilon, omega):
     x1, x2 = y
-    alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
-
-    A1_t = time_varying_appeal(t, A1, epsilon, omega)
+    alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
     RL1 = beta1 * k1 * x2 * np.exp(-(k1 * x2)**n1)
     RL2 = beta2 * k2 * x1 * np.exp(-(k2 * x1)**n2)
@@ -19,8 +14,8 @@ def love_dynamics(y, t, p, A1, epsilon, omega):
     BA1 = x1**(2*m1) / (x1**(2*m1) + sigma1**(2*m1))
     BA2 = x2**(2*m2) / (x2**(2*m2) + sigma2**(2*m2))
 
-    dx1dt = -alpha1 * x1 + RL1 * (1 + bA1 * BA1) * gamma1 * A1_t
-    dx2dt = -alpha2 * x2 + RL2 * (1 + bA2 * BA2) * gamma2 * A2
+    dx1dt = -alpha1 * x1 + RL1 + (1 + bA1 * BA1) * gamma1 * A2
+    dx2dt = -alpha2 * x2 + RL2 + (1 + bA2 * BA2) * gamma2 * A1*(1+epsilon*np.sin(omega*t))
 
     return [dx1dt, dx2dt]
 
@@ -35,7 +30,7 @@ params = [
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
     2.9,    # bA1       =   Bias coefficient of individual 1 (how much individual 1 is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    # 0.1,    # A1        =   Appeal of individual 1 (how much individual 1 is appealing to their partner)
+    0.1,    # A1        =   Appeal of individual 1 (how much individual 1 is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
     0.08,   # k1        =   Insecurity of individual 1 (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2
@@ -47,15 +42,15 @@ params = [
     1       # sigma2    =   Saddle quantity of 2
 ]
 
-A1 = 0.1
-epsilon = 0.0
+A1 = 0.017
+epsilon = 0.01
 omega = 2 * np.pi / 52
 
 
 initial_conditions = [1, 1.5]
 t = np.linspace(0, 208, 10000)
 
-solution = odeint(love_dynamics, initial_conditions, t, args=(params, A1, epsilon, omega))
+solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 
 
 # Plot
