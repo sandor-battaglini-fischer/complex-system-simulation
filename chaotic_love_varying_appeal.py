@@ -22,17 +22,17 @@ def love_dynamics(y, t, p, epsilon, omega):
 
 # Parameters
 params = [
-    0.36,   # alpha1    =   Forgetting coefficient 1 (decay rate of love of individual 1 in absence of partner)
+    0.36,   # alpha1    =   Forgetting coefficient 1 (decay rate of love of Romeo in absence of partner)
     0.2,    # alpha2    =   Forgetting coefficient 2
     0.75,   # beta1     =   Reactiveness to love of 2 on 1 (influence of the partner's love on an individual's feelings)
     10.66,  # beta2     =   Reactiveness to love of 1 on 2
     1,      # gamma1    =   Reactiveness to appeal of 2 on 1 (influence of the partner's appeal on an individual's feelings)
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
-    2.9,    # bA1       =   Bias coefficient of individual 1 (how much individual 1 is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
+    2.9,    # bA1       =   Bias coefficient of Romeo (how much Romeo is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    0.1,    # A1        =   Appeal of individual 1 (how much individual 1 is appealing to their partner)
+    0.017,  # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
-    0.08,   # k1        =   Insecurity of individual 1 (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
+    0.08,   # k1        =   Insecurity of Romeo (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2
     1,      # n1        =   Shape of reaction function of 1 on 2 (nonlinearity of reaction function of 1 on 2, sensitivity of the individuals' feelings to changes in their partner's feelings)
     4,      # n2        =   Shape of reaction function of 2 on 1
@@ -42,12 +42,12 @@ params = [
     1       # sigma2    =   Saddle quantity of 2
 ]
 
-A1 = 0.017
-epsilon = 0.01
+
+epsilon = 0.17
 omega = 2 * np.pi / 52
 
 
-initial_conditions = [1, 1.5]
+initial_conditions = [0.895, 1.5]
 t = np.linspace(0, 208, 10000)
 
 solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
@@ -78,9 +78,9 @@ hp1_peaks = peak_values[1:]
 
 # PPP Diagram
 axs[1].scatter(h_peaks, hp1_peaks, color='blue')
-axs[1].set_xlabel(r'$x_{1, h}$ (Individual 1 Peak h)')
-axs[1].set_ylabel(r'$x_{1, h+1}$ (Individual 1 Peak h+1)')
-axs[1].set_title('Peak-to-Peak Plot (PPP) for Individual 1')
+axs[1].set_xlabel(r'$x_{1, h}$ (Romeo Peak h)')
+axs[1].set_ylabel(r'$x_{1, h+1}$ (Romeo Peak h+1)')
+axs[1].set_title('Peak-to-Peak Plot (PPP) for Romeo')
 axs[1].grid(True)
 
 fig.tight_layout()
