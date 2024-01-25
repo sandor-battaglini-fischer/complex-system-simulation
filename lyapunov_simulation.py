@@ -2,7 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.signal import find_peaks
+import time
+from multiprocessing import Pool
 
+  
 
 def love_dynamics(y, t, p, epsilon, omega):
     x1, x2 = y
@@ -18,6 +21,30 @@ def love_dynamics(y, t, p, epsilon, omega):
     dx2dt = -alpha2 * x2 + RL2 + (1 + bA2 * BA2) * gamma2 * A1*(1+epsilon*np.sin(omega*t))
 
     return [dx1dt, dx2dt]
+
+def largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
+    t = np.arange(0, T, dt)
+    n = len(t)
+    
+    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
+
+    updated_params = params.copy()
+    updated_params[8] = A1 
+    
+    sol1 = odeint(love_dynamics, initial_conditions, t, args=(updated_params, epsilon, omega))
+    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(updated_params, epsilon, omega))
+
+    divergence = np.linalg.norm(sol2 - sol1, axis=1)
+    divergence = np.ma.masked_where(divergence == 0, divergence)
+    lyapunov = 1/n * np.sum(np.log(divergence/delta))
+
+    return lyapunov
+
+def compute_LLE_for_params(param_tuple):
+    A1, epsilon = param_tuple
+    print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
+    return largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
+
 
 
 # Parameters
@@ -43,77 +70,32 @@ params = [
 ]
 
 
-epsilon = 0.17
-omega = 2 * np.pi / 52
-
 
 initial_conditions = [0.895, 1.5]
-t = np.linspace(0, 208, 10000)
+omega = 2 * np.pi / 52
 
-solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
+if __name__ == '__main__':
 
+    A1_values = np.linspace(0.05, 0.19, 1000)
+    epsilon_values = np.linspace(0, 1, 1000)
 
-# Plot
-fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+    param_combinations = [(A1, epsilon) for A1 in A1_values for epsilon in epsilon_values]
 
-# Time series
-axs[0].plot(t, solution[:, 0], label='Romeo', color='tab:blue')
-axs[0].plot(t, solution[:, 1], label='Juliet', color='tab:pink')
-axs[0].set_xlabel('Time (weeks)')
-axs[0].set_ylabel('Feelings')
-axs[0].set_title('Dynamics of Romantic Relationship with Environmental Stress')
-axs[0].legend()
-axs[0].grid(True)
+    start_time = time.time()
 
+    with Pool() as pool:
+        results = pool.map(compute_LLE_for_params, param_combinations)
 
-# Peaks
-x1_data = solution[:, 0]
+    LLE_values = np.array(results).reshape(len(A1_values), len(epsilon_values))
 
-peaks, _ = find_peaks(x1_data)
-peak_values = x1_data[peaks]
+    end_time = time.time()
+    print(f"Total runtime: {end_time - start_time:.2f} seconds")
 
-h_peaks = peak_values[:-1] 
-hp1_peaks = peak_values[1:]
-
-
-# PPP Diagram
-axs[1].scatter(h_peaks, hp1_peaks, color='blue')
-axs[1].set_xlabel(r'$x_{1, h}$ (Romeo Peak h)')
-axs[1].set_ylabel(r'$x_{1, h+1}$ (Romeo Peak h+1)')
-axs[1].set_title('Peak-to-Peak Plot (PPP) for Romeo')
-axs[1].grid(True)
-
-fig.tight_layout()
-plt.show()
-
-
-def largest_lyapunov_exponent(func, initial_conditions, params, epsilon, omega, delta=0.0001, T=208, dt=0.02):
-    t = np.arange(0, T, dt)
-    n = len(t)
-    
-    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
-
-    sol1 = odeint(func, initial_conditions, t, args=(params, epsilon, omega))
-    sol2 = odeint(func, perturbed_initial, t, args=(params, epsilon, omega))
-
-    divergence = np.linalg.norm(sol2 - sol1, axis=1)
-    divergence = np.ma.masked_where(divergence == 0, divergence)
-    lyapunov = 1/n * np.sum(np.log(divergence/delta))
-
-    return lyapunov
-
-def lyapunov_exponent(data):
-    N = len(data)
-    eps = 0.0001
-    lyapunovs = []
-    for i in range(N):
-        for j in range(i + 1, N):
-            if np.abs(data[i] - data[j]) < eps:
-                for k in range(1, min(N - i, N - j)):
-                    d0 = np.abs(data[i] - data[j])
-                    dn = np.abs(data[i + k] - data[j + k])
-                    lyapunovs.append(np.log(dn / d0))
-    return np.mean(lyapunovs)
-
-LLE = largest_lyapunov_exponent(love_dynamics, initial_conditions, params, epsilon, omega)
-print("Largest Lyapunov Exponent:", LLE)
+    # Plotting
+    plt.figure(figsize=(8, 6))
+    plt.imshow(LLE_values, cmap='seismic', vmin=-2, vmax=2, extent=[epsilon_values.min(), epsilon_values.max(), A1_values.min(), A1_values.max()], aspect='auto', origin='lower')
+    plt.colorbar(label='Largest Lyapunov Exponent')
+    plt.xlabel('Variability (epsilon)')
+    plt.ylabel('Mean Appeal (A1)')
+    plt.title(r'Heatmap of LLE for different Mean Appeals ($A_1$) and Variability ($\epsilon$)')
+    plt.show()
