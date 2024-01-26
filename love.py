@@ -9,6 +9,11 @@ def calculateODE(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx
     sol = solve_ivp (vdp1, [0, 4], np.array([xi0, yi0, xp0, yp0]), max_step=0.1)
     return sol
 
+def calculateODEMatrixVector(A, B, x): 
+    vdp1 = lambda T, x: A.dot(np.array([x[0], x[1], x[2], x[3]])) + B
+    sol = solve_ivp (vdp1, [0, 4], np.array([x[0], x[1], x[2], x[3]]), max_step=0.1)
+    return sol
+
 
 def update_plot(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx,dyy,dyx,fyx,gyx,xi0,yi0,xp0,yp0):
     sol = calculateODE(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx,dyy,dyx,fyx,gyx,xi0,yi0,xp0,yp0)
