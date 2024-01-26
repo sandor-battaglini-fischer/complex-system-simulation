@@ -9,7 +9,7 @@ This repository contains Python scripts for blablabla
 ## File Descriptions
 
 ### `blabla.py`
-This file includes the core methods used in this project. It contains the implementation of the basic Mandelbrot iteration, functions to calculate the area and the three basic sampling techniques. It serves as the backbone for the simulations in other scripts and run by itself it creates plots of the fractals and where each sample lands for each sampling method.
+This file includes the core methods used in this project. It contains the implementation of the basic blablab
 
 ### `antithetic.py`
 `blabla.py` implements 
