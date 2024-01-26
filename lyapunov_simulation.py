@@ -76,8 +76,8 @@ omega = 2 * np.pi / 52
 
 if __name__ == '__main__':
 
-    A1_values = np.linspace(0.05, 0.19, 1000)
-    epsilon_values = np.linspace(0, 1, 1000)
+    A1_values = np.linspace(0.05, 0.19, 10)
+    epsilon_values = np.linspace(0, 1, 10)
 
     param_combinations = [(A1, epsilon) for A1 in A1_values for epsilon in epsilon_values]
 
