@@ -11,7 +11,7 @@ def calculateODE(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx
 
 def calculateODEMatrixVector(A, B, x): 
     vdp1 = lambda T, x: A.dot(np.array([x[0], x[1], x[2], x[3]])) + B
-    sol = solve_ivp (vdp1, [0, 4], np.array([x[0], x[1], x[2], x[3]]), max_step=0.1)
+    sol = solve_ivp (vdp1, [0, 30], np.array([x[0], x[1], x[2], x[3]]), max_step=0.1)
     return sol
 
 
