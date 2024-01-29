@@ -30,7 +30,7 @@ params = [
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
     2.9,    # bA1       =   Bias coefficient of Romeo (how much Romeo is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    0.017,  # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
+    0.15,    # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
     0.08,   # k1        =   Insecurity of Romeo (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2
@@ -43,12 +43,12 @@ params = [
 ]
 
 
-epsilon = 0.17
+epsilon = 0.26
 omega = 2 * np.pi / 52
 
 
 initial_conditions = [0.895, 1.5]
-t = np.linspace(0, 208, 10000)
+t = np.linspace(0, 208, 1000000)
 
 solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 
