@@ -14,13 +14,22 @@ from chapter 14 and 15 of the book.
 
 Model of Kathe-Jules-Jim triangular love dynamics.
 
+<<<<<<< Updated upstream
+=======
+This script should analyse where positive Lyapunov exponents occur in the parameter space.
+
+>>>>>>> Stashed changes
 """
 
 central_partner = "Kathe"
 lover1 = "Jules"
 lover2 = "Jim"
 
+<<<<<<< Updated upstream
 def largest_lyapunov_exponent(initial_conditions, var, params, T=208, dt=0.02):
+=======
+def largest_lyapunov_exponent(initial_conditions, var, params, T=208, dt=0.04):
+>>>>>>> Stashed changes
     t = np.arange(0, T, dt)
     n = len(t)
 
