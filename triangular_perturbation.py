@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
 # Names for the central partner and the two lovers
-central_partner = "Kathe"
-lover1 = "Jules"
-lover2 = "Jim"
+central_partner = "Woman"
+lover1 = "Husband"
+lover2 = "Lover"
 
 # Kathe's reaction function to love from Jules
 def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
@@ -125,7 +125,7 @@ def plot_love_dynamics(t, solution, perturbed_solution):
 
     # Phase diagram between central partner and lover1
     axs[0, 1].plot(x12, x21, label='Original', color='tab:blue')
-    axs[0, 1].plot(px12, px21, '--', label='Perturbed', color='tab:blue')
+    axs[0, 1].plot(px12, px21, '--', label='Perturbed', color='tab:blue', alpha=0.6)
     axs[0, 1].set_xlabel(f'Feelings of {central_partner} towards {lover1}')
     axs[0, 1].set_ylabel(f'Feelings of {lover1} towards {central_partner}')
     axs[0, 1].set_title('Phase Diagram')
@@ -145,7 +145,7 @@ def plot_love_dynamics(t, solution, perturbed_solution):
 
     # Phase diagram between central partner and lover2
     axs[1, 1].plot(x13, x31, label='Original', color='tab:blue')
-    axs[1, 1].plot(px13, px31, '--', label='Perturbed', color='tab:blue')
+    axs[1, 1].plot(px13, px31, '--', label='Perturbed', color='tab:blue', alpha=0.6)
     axs[1, 1].set_xlabel(f'Feelings of {central_partner} towards {lover2}')
     axs[1, 1].set_ylabel(f'Feelings of {lover2} towards {central_partner}')
     axs[1, 1].set_title('Phase Diagram')
@@ -182,12 +182,14 @@ def plot_love_dynamics(t, solution, perturbed_solution):
 
     number_of_zeros = max(len(times_of_zero_crossings) - 2, 0)
     number_of_zeros_perturbed = max(len(times_of_zero_crossings_perturbed) - 2, 0)
-    axs[2, 1].text(0.5, 0.5, f'Partner switching: {number_of_zeros}, with initial conditions {initial_conditions}, \n Perturbed partner switching: {number_of_zeros_perturbed}, with initial conditions {perturbed_initial_conditions}',
+    axs[2, 1].text(0.5, 0.5, f'Partner switching: {number_of_zeros}, \n Perturbed partner switching: {number_of_zeros_perturbed}',
                    horizontalalignment='center',
                    verticalalignment='center',
-                   fontsize=14,
+                   fontsize=10,
                    transform=axs[2, 1].transAxes)
     axs[2, 1].axis('off')
+
+    print(f'Perturbed initial conditions {initial_perturbations} and parameters {parameter_perturbations} \n')
 
     fig.tight_layout()
     plt.show()
@@ -201,7 +203,11 @@ if __name__ == '__main__':
     solution_original = odeint(love_dynamics, initial_conditions, t, args=(params,))
 
     # Perturbed dynamics
-    initial_perturbations = {0: 0, 1: 0, 2: 0, 3: 0}
+    initial_perturbations = {0: 0,  # x12: initial feelings of Kathe towards Jules
+                             1: 0,  # x13: initial feelings of Kathe towards Jim
+                             2: 0,  # x21: initial feelings of Jules towards Kathe
+                             3: 0   # x31: initial feelings of Jim towards Kathe
+                             }
     parameter_perturbations = {0: 0,    # alpha1: forgetting coefficient for Kathe (years^-1)
                                1: 0,    # alpha2: forgetting coefficient for Jules (years^-1)
                                2: 0,    # alpha3: forgetting coefficient for Jim (years^-1)
@@ -214,9 +220,9 @@ if __name__ == '__main__':
                                9: 0,    # gamma3: reaction coefficient to appeal for Jim (years^-1)
                                10: 0,   # epsilon: sensitivity of reaction to love for Kathe (coupling constant)
                                11: 0,   # delta: sensitivity of reaction to love for Jules and Jim (coupling constant)
-                               12: 3,   # A1: appeal of Kathe (dimensionless)
-                               13: 3,   # A2: appeal of Jules (dimensionless)
-                               14: 0,   # A3: appeal of Jim (dimensionless)
+                               12: 0,   # A1: appeal of Kathe (dimensionless)
+                               13: 0,   # A2: appeal of Jules (dimensionless)
+                               14: 0.6,   # A3: appeal of Jim (dimensionless)
                                15: 0,   # tauI12: insecurity threshold for Kathe's reaction to Jules' love
                                16: 0,   # sigmaL12: sensitivity of reaction to love for Kathe to Jules
                                17: 0,   # sigmaI12: sensitivity of insecurity for Kathe to Jules

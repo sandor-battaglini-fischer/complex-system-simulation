@@ -20,19 +20,19 @@ def update_plot(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx,
     [t, xa] = [sol.t, sol.y]
 
     # Set up a figure twice as tall as it is wide
-    fig = plt.figure(figsize=(20, 20))
-    fig.suptitle('4 Subplots', fontsize=16)
+    fig = plt.figure(figsize=(16, 16))
+    # fig.suptitle('4 Subplots', fontsize=16)
 
-    # first subplot
-    ax = fig.add_subplot(2, 2, 1)
-    ax.scatter(xa[0], xa[1], s=100, cmap='viridis', alpha=0.5, c=t)
-    ax.scatter(xa[2], xa[3], s=100, cmap='viridis', alpha=0.5, c=t)
-    ax.plot(xa[0],xa[1], c="black", label="intimacy", alpha=0.5)
-    ax.plot(xa[2],xa[3], c="red", label="passion", alpha=0.5)
-    ax.set_xlabel('Xena', fontsize=16)
-    ax.set_ylabel('Yorgo', fontsize=16)
-    ax.grid(True)
-    ax.legend()
+    # # first subplot
+    # ax = fig.add_subplot(2, 2, 1)
+    # ax.scatter(xa[0], xa[1], s=100, cmap='viridis', alpha=0.5, c=t)
+    # ax.scatter(xa[2], xa[3], s=100, cmap='viridis', alpha=0.5, c=t)
+    # ax.plot(xa[0],xa[1], c="black", label="intimacy", alpha=0.5)
+    # ax.plot(xa[2],xa[3], c="red", label="passion", alpha=0.5)
+    # ax.set_xlabel('Xena', fontsize=16)
+    # ax.set_ylabel('Yorgo', fontsize=16)
+    # ax.grid(True)
+    # ax.legend()
 
     # second subplot
     ax = fig.add_subplot(2, 2, 2)
@@ -46,20 +46,20 @@ def update_plot(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx,
     ax.grid(True)
     ax.legend()
 
-    # third subplot
-    ax = fig.add_subplot(2, 2, 3, projection='3d')
-    ax.scatter(xa[0], xa[1], xa[2], c=t, s=100, cmap='viridis', alpha=0.5)
-    ax.set_xlabel('intimacy of Xena', fontsize=16)
-    ax.set_ylabel('intimacy of Yorgo', fontsize=16)
-    ax.set_zlabel('passion of Xena', fontsize=16)
-    ax.grid(True)
+    # # third subplot
+    # ax = fig.add_subplot(2, 2, 3, projection='3d')
+    # ax.scatter(xa[0], xa[1], xa[2], c=t, s=100, cmap='viridis', alpha=0.5)
+    # ax.set_xlabel('intimacy of Xena', fontsize=16)
+    # ax.set_ylabel('intimacy of Yorgo', fontsize=16)
+    # ax.set_zlabel('passion of Xena', fontsize=16)
+    # ax.grid(True)
 
-    # fourth subplot
-    ax = fig.add_subplot(2, 2, 4, projection='3d')
-    ax.scatter(xa[0], xa[1], xa[3], c=t, cmap='viridis', alpha=0.5, s=100)
-    ax.set_xlabel('intimacy of Xena', fontsize=16)
-    ax.set_ylabel('intimacy of Yorgo', fontsize=16)
-    ax.set_zlabel('passion of Yorgo', fontsize=16)
-    ax.grid(True)
+    # # fourth subplot
+    # ax = fig.add_subplot(2, 2, 4, projection='3d')
+    # ax.scatter(xa[0], xa[1], xa[3], c=t, cmap='viridis', alpha=0.5, s=100)
+    # ax.set_xlabel('intimacy of Xena', fontsize=16)
+    # ax.set_ylabel('intimacy of Yorgo', fontsize=16)
+    # ax.set_zlabel('passion of Yorgo', fontsize=16)
+    # ax.grid(True)
 
     plt.show()
