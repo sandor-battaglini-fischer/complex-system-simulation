@@ -17,15 +17,3 @@ def random_starting_vector():
 def xy_starting_vector():
     A = np.zeros((4))
     return A
-
-def calculateODE(axx,axy,bxx,bxy,cxx,cxy,dxx,dxy,fxy,gxy,ayy,ayx,byy,byx,cyy,cyx,dyy,dyx,fyx,gyx,xi0,yi0,xp0,yp0): 
-    A = np.array([[axx, axy, bxx, bxy], [ayx, ayy, byx, byy], [cxx, cxy, dxx, dxy], [cyx, cyy, dyx, dyy]])
-    B = np.array([fxy, fyx, gxy, gyx])
-    vdp1 = lambda T, x: A.dot(np.array([x[0], x[1], x[2], x[3]])) + B
-    sol = solve_ivp (vdp1, [0, 4], np.array([xi0, yi0, xp0, yp0]), max_step=0.1)
-    return sol
-
-def calculateODEMatrixVector(A, B, x): 
-    vdp1 = lambda T, x: A.dot(np.array([x[0], x[1], x[2], x[3]])) + B
-    sol = solve_ivp (vdp1, [0, 30], np.array([x[0], x[1], x[2], x[3]]), max_step=0.1)
-    return sol
