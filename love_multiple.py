@@ -29,3 +29,12 @@ def calculateODEMatrixVector(A, B, x):
     vdp1 = lambda T, x: A.dot(np.array([x[0], x[1], x[2], x[3]])) + B
     sol = solve_ivp (vdp1, [0, 30], np.array([x[0], x[1], x[2], x[3]]), max_step=0.1)
     return sol
+
+def randomize_parameter_network(G, number_of_nodes):
+    for i in range(number_of_nodes):
+        for j in range(i+1, number_of_nodes):
+            G[i][j]['parameters'] = [random_starting_matrix(), random_starting_vector(), xy_starting_vector()]
+            calculatedODE = calculateODEMatrixVector(G[i][j]['parameters'][0], G[i][j]['parameters'][1], G[i][j]['parameters'][2])
+            G[i][j]["data"] = calculatedODE.y
+            G[i][j]["t"] = calculatedODE.t
+    return G
