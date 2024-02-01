@@ -57,8 +57,8 @@ solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, o
 fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
 # Time series
-axs[0].plot(t, solution[:, 0], label='Romeo', color='tab:blue')
-axs[0].plot(t, solution[:, 1], label='Juliet', color='tab:pink')
+axs[0].plot(t, solution[:, 0], label='Partner 1', color='tab:blue')
+axs[0].plot(t, solution[:, 1], label='Partner 2', color='tab:pink')
 axs[0].set_xlabel('Time (weeks)')
 axs[0].set_ylabel('Feelings')
 axs[0].set_title('Dynamics of Romantic Relationship with Environmental Stress')
@@ -77,10 +77,10 @@ hp1_peaks = peak_values[1:]
 
 
 # PPP Diagram
-axs[1].scatter(h_peaks, hp1_peaks, color='blue')
-axs[1].set_xlabel(r'$x_{1, h}$ (Romeo Peak h)')
-axs[1].set_ylabel(r'$x_{1, h+1}$ (Romeo Peak h+1)')
-axs[1].set_title('Peak-to-Peak Plot (PPP) for Romeo')
+axs[1].scatter(h_peaks, hp1_peaks, color='blue', s=1)
+axs[1].set_xlabel(r'$x_{1, h}$ (Partner 1 Peak h)')
+axs[1].set_ylabel(r'$x_{1, h+1}$ (Partner 1 Peak h+1)')
+axs[1].set_title('Peak-to-Peak Plot (PPP) for Partner 1')
 axs[1].grid(True)
 
 fig.tight_layout()

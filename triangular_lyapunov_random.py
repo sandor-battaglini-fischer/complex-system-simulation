@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.signal import find_peaks
 import time
+import multiprocessing
 from multiprocessing import Pool
 from scipy.optimize import curve_fit
 from numpy import random

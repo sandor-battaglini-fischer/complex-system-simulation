@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
 # Names for the central partner and the two lovers
-central_partner = "Kathe"
-lover1 = "Jules"
-lover2 = "Jim"
+central_partner = "Woman"
+lover1 = "Husband"
+lover2 = "Lover"
 
 # Kathe's reaction function to love from Jules
 def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
@@ -60,10 +60,10 @@ params = [
     1,    # gamma3: reaction coefficient to appeal for Jim (years^-1)
     0.0062,   # epsilon: sensitivity of reaction to love for Kathe (coupling constant)
     0.0285,    # delta: sensitivity of reaction to love for Jules and Jim (coupling constant)
-    20,   # A1: appeal of Kathe (dimensionless)
+    11,   # A1: appeal of Kathe (dimensionless)
     4,    # A2: appeal of Jules (dimensionless)
-    5,    # A3: appeal of Jim (dimensionless)
-    2.5,  # tauI12: insecurity threshold for Kathe's reaction to Jules' love
+    10,    # A3: appeal of Jim (dimensionless)
+    1,  # tauI12: insecurity threshold for Kathe's reaction to Jules' love
     10,   # sigmaL12: sensitivity of reaction to love for Kathe to Jules
     10.5, # sigmaI12: sensitivity of insecurity for Kathe to Jules
     9,    # tau_S: synergism threshold for Kathe

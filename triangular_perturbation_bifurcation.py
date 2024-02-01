@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
+from tqdm import tqdm
 
 # Names for the central partner and the two lovers
 central_partner = "Woman"
@@ -87,7 +88,7 @@ def perturb_initial_conditions(initial_conditions, perturbations):
     """
     perturbed_conditions = initial_conditions.copy()
     for index, strength in perturbations.items():
-        perturbed_conditions[index] += strength
+        perturbed_conditions[index] += strength * perturbed_conditions[index]
     return perturbed_conditions
 
 
@@ -189,60 +190,118 @@ def plot_love_dynamics(t, solution, perturbed_solution):
                    transform=axs[2, 1].transAxes)
     axs[2, 1].axis('off')
 
-    print(f'Perturbed initial conditions {initial_perturbations} and parameters {parameter_perturbations} \n')
-
     fig.tight_layout()
-    plt.show()
-
+    # plt.show()
     
+def count_partner_switchings(time_series):
+    # Count the number of times the time series crosses zero
+    zero_crossings = np.where(np.diff(np.sign(time_series)))[0]
+    return len(zero_crossings)
+
+def simulate_for_a3_range(a3_range, initial_conditions, params_template, t):
+    switchings = []
+
+    for a3 in a3_range:
+        params = params_template.copy()
+        params[14] = a3  # Set the A3 value
+        solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
+        imbalance = solution[:, 0] - solution[:, 1]  # Assuming x12 - x13 is the imbalance
+        num_switchings = count_partner_switchings(imbalance)
+        switchings.append(num_switchings)
+
+    return switchings
+
+def plot_bifurcation_diagram(a3_range, switchings):
+    plt.figure(figsize=(10, 6))
+    plt.plot(a3_range, switchings, 'b-')
+    plt.xlabel('Appeal of Jim (A3)')
+    plt.ylabel('Number of Partner Switchings')
+    plt.title('Bifurcation Diagram')
+    plt.grid(True)
+    plt.show()
+    
+def calculate_integral_balance(t, solution):
+    # Assuming x21 represents Jules' feelings towards the central partner
+    # and x31 represents Jim's feelings towards the central partner
+    area_jules = np.trapz(solution[:, 2], t)  # Integral for Jules
+    area_jim = np.trapz(solution[:, 3], t)    # Integral for Jim
+    integral_balance = area_jules - area_jim
+    return integral_balance
+
+def generate_heatmap_data(a3_range, a1_range, initial_conditions, params_template, t):
+    heatmap_data = np.zeros((len(a3_range), len(a1_range)))
+
+    for i in tqdm(range(len(a3_range)), desc='A1 Progress'):
+        for j in range(len(a1_range)):
+            a3 = a3_range[i]
+            a1 = a1_range[j]
+            params = params_template.copy()
+            params[14] = a3  # A1: appeal of Kathe
+            params[12] = a1  # A3: appeal of Jim
+            solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
+            integral_balance = calculate_integral_balance(t, solution)
+            heatmap_data[i, j] = integral_balance
+
+    return heatmap_data
+
+def plot_integral_balance_heatmap(a1_range, a3_range, heatmap_data):
+    # Normalize the heatmap_data around zero
+    max_abs_value = np.max(np.abs(heatmap_data))
+    norm_heatmap_data = heatmap_data / max_abs_value  # Normalized to [-1, 1]
+
+    plt.figure(figsize=(10, 8))
+    plt.imshow(norm_heatmap_data, extent=[a1_range[0], a1_range[-1], a3_range[0], a3_range[-1]],
+               aspect='auto', cmap='RdBu', interpolation='nearest', vmin=-1, vmax=1)
+    plt.colorbar(label='Normalized Integral Balance between Jules (+) and Jim (-)')
+    plt.xlabel('Appeal of Jim (A3)')
+    plt.ylabel('Appeal of Kathe (A1)')
+    plt.title('Heatmap of Normalized Integral Balance')
+    plt.grid(False)
+    plt.show()
+    
+def calculate_gradient(heatmap_data, a1_range, a3_range):
+    # Compute the gradient along both axes
+    gradient_a3 = np.gradient(heatmap_data, axis=0)
+    gradient_a1 = np.gradient(heatmap_data, axis=1)
+
+    # Calculate the magnitude of the gradient vector
+    gradient_magnitude = np.sqrt(gradient_a3**2 + gradient_a1**2)
+
+    return gradient_magnitude
+
+
+
 if __name__ == '__main__':
     t = np.linspace(0, 50, 1000)
-
-    # Original dynamics
     initial_conditions = [0, 0, 0, 0]
-    solution_original = odeint(love_dynamics, initial_conditions, t, args=(params,))
+    a1_range = np.linspace(0, 20, 100) 
+    a3_range = np.linspace(0, 20, 100)
 
-    # Perturbed dynamics
-    initial_perturbations = {0: 5,  # x12: initial feelings of Kathe towards Jules
-                             1: -5,  # x13: initial feelings of Kathe towards Jim
-                             2: 5,  # x21: initial feelings of Jules towards Kathe
-                             3: -2   # x31: initial feelings of Jim towards Kathe
-                             }
-    parameter_perturbations = {0: 0,    # alpha1: forgetting coefficient for Kathe (years^-1)
-                               1: 0,    # alpha2: forgetting coefficient for Jules (years^-1)
-                               2: 0,    # alpha3: forgetting coefficient for Jim (years^-1)
-                               3: 0,    # beta21: reaction coefficient to love for Jules to Kathe's love(years^-1)
-                               4: 0,    # beta12: reaction coefficient to love for Kathe to Jules love (years^-1)
-                               5: 0,    # beta13: reaction coefficient to love for Kathe to Jim's love (years^-1)
-                               6: 0,    # beta31: reaction coefficient to love for Jim to Kathe's love (years^-1)
-                               7: 0,    # gamma1: reaction coefficient to appeal for Kathe (years^-1)
-                               8: 0,    # gamma2: reaction coefficient to appeal for Jules (years^-1)
-                               9: 0,    # gamma3: reaction coefficient to appeal for Jim (years^-1)
-                               10: 0,   # epsilon: sensitivity of reaction to love for Kathe (coupling constant)
-                               11: 0,   # delta: sensitivity of reaction to love for Jules and Jim (coupling constant)
-                               12: 0,   # A1: appeal of Kathe (dimensionless)
-                               13: 0,   # A2: appeal of Jules (dimensionless)
-                               14: 0,   # A3: appeal of Jim (dimensionless)
-                               15: 0,   # tauI12: insecurity threshold for Kathe's reaction to Jules' love
-                               16: 0,   # sigmaL12: sensitivity of reaction to love for Kathe to Jules
-                               17: 0,   # sigmaI12: sensitivity of insecurity for Kathe to Jules
-                               18: 0,   # tau_S: synergism threshold for Kathe
-                               19: 0,   # sigmaS: sensitivity of synergism for Kathe
-                               20: 0,   # tauP: platonicity threshold for Jules
-                               21: 0,   # p: maximum platonicity for Jules
-                               22: 0,   # sigmaP: sensitivity of platonicity for Jules
-                               23: 0,   # tauI31: insecurity threshold for Jim's reaction to love
-                               24: 0,   # sigmaL31: sensitivity of reaction to love for Jim
-                               25: 0    # sigmaI31: sensitivity of insecurity for Jim
-                               }
+    # # Simulate for a range of A3 values
+    # switchings = simulate_for_a3_range(a3_range, initial_conditions, params, t)
 
-    perturbed_initial_conditions = perturb_initial_conditions(initial_conditions, initial_perturbations)
-    perturbed_params = perturb_parameters(params, parameter_perturbations)
-    solution_perturbed = odeint(love_dynamics, perturbed_initial_conditions, t, args=(perturbed_params,))
+    # # Plot the bifurcation diagram
+    # plot_bifurcation_diagram(a3_range, switchings)
+    
 
-    # Plotting
-    plot_love_dynamics(t, solution_original, solution_perturbed)
+    # Generate heatmap data
+    heatmap_data = generate_heatmap_data(a3_range, a1_range, initial_conditions, params, t)
 
+    # Plot the heatmap
+    plot_integral_balance_heatmap(a3_range, a1_range, heatmap_data)
+    
+    # gradient_magnitude = calculate_gradient(heatmap_data, a3_range, a1_range)
+
+    # # You can plot the gradient magnitude as a heatmap to visualize where the largest changes are occurring
+    # plt.figure(figsize=(10, 8))
+    # plt.imshow(gradient_magnitude, extent=[a3_range[0], a3_range[-1], a1_range[0], a1_range[-1]],
+    #         aspect='auto', cmap='viridis', interpolation='nearest')
+    # plt.colorbar(label='Gradient Magnitude of Integral Balance')
+    # plt.xlabel('Appeal of Jim (A3)')
+    # plt.ylabel('Appeal of Kathe (A1)')
+    # plt.title('Gradient Magnitude Heatmap')
+    # plt.grid(False)
+    # plt.show()
 
 
 
