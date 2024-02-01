@@ -20,9 +20,8 @@ def largest_lyapunov_exponent(initial_conditions, a1, delta, params, omega, pert
     t = np.arange(0, T, dt)
     n = len(t)
     
-    # Adjust the parameter for A1 within the params list before passing it to odeint
     updated_params = list(params)
-    updated_params[6] = a1  # Assuming that A1 is at index 6 in the params list
+    updated_params[6] = a1
 
     # Create the perturbed initial conditions
     perturbed_initial = initial_conditions + np.random.normal(0, perturbation_delta, len(initial_conditions))
@@ -66,8 +65,7 @@ if __name__ == '__main__':
 
     results = []
     for a1, delta in param_combinations:
-        # Update delta in params for each iteration
-        params[11] = delta  # Assuming delta is at index 11 in the params list
+        params[11] = delta 
         lle = largest_lyapunov_exponent(initial_conditions, a1, delta, params, omega)
         results.append(lle)
 
