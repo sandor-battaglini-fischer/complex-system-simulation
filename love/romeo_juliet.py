@@ -1,8 +1,53 @@
+"""General linear sytemn"""
+
+# Author: Yehui He <yehui.he@hotmail.com>
+
+# License: MIT
+
+
+__all__ = ["romeo_juliee"]
 
 
 def romeo_juliet(z, t, a, b, c, d):
+    """
+    General linear system.
+
+    Modeling love affairs with system of ordinary first order homogeneous differential 
+    equations with constant coefficients
+
+    Parameters
+    ----------
+    z : list of length 2 
+        Romeo’s love / hate for Juliet at time t.
+        Juliet’s love / hate for Romeo at time t.
+    t : float
+        initial time
+    a : float
+        Response to love for Romeo.
+    b : float
+        Appeal of Juliet.
+    c : float
+        Appeal of Romeo.
+    d : float
+        Response to love for Juliet
+
+    Returns
+    -------
+    res : float
+        The value of the vector field
+
+    References
+    ----------
+
+    .. [1] Strogatz, S. H. (1988) Love affairs and differential equations. Math. Magazine
+           61, 35.
+    """
+
     R, J = z
-    return [a*R + b*J, c*R + d*J]
+
+    res = [a*R + b*J, c*R + d*J]
+
+    return res 
 
 def plot_phase_portrait(func, params):
     x = np.linspace(-10, 10, 20)
