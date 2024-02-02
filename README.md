@@ -1,5 +1,5 @@
-# Romantic Chaos - A study of the emergence of unpredictability in relationships
-## Complex System Simulation - UVA 2024
+# Romantic Chaos: A study of the emergence of unpredictability in relationships
+For the course "Complex System Simulation" - University of Amsterdam 2024
 
 ### License:
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -35,4 +35,4 @@ blabla
 
 ---
 
-Developed by Sándor Battaglini-Fischer, blablabla
+Developed by Sándor Battaglini-Fischer, Yehui He, Thomas Norton, Victor Piaskowski
