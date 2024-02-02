@@ -82,9 +82,6 @@ def perturb_initial_conditions(initial_conditions, perturbations):
     """
     Perturb specified initial conditions.
     
-    :param initial_conditions: List of initial conditions.
-    :param perturbations: Dictionary with index as key and perturbation strength as value.
-    :return: Perturbed initial conditions.
     """
     perturbed_conditions = initial_conditions.copy()
     for index, strength in perturbations.items():
@@ -96,9 +93,6 @@ def perturb_parameters(params, perturbations):
     """
     Perturb specified parameters.
     
-    :param params: List of parameters.
-    :param perturbations: Dictionary with index as key and perturbation strength as value.
-    :return: Perturbed parameters.
     """
     perturbed_params = params.copy()
     for index, strength in perturbations.items():
@@ -198,27 +192,6 @@ def count_partner_switchings(time_series):
     zero_crossings = np.where(np.diff(np.sign(time_series)))[0]
     return len(zero_crossings)
 
-def simulate_for_a3_range(a3_range, initial_conditions, params_template, t):
-    switchings = []
-
-    for a3 in a3_range:
-        params = params_template.copy()
-        params[14] = a3  # Set the A3 value
-        solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
-        imbalance = solution[:, 0] - solution[:, 1]  # Assuming x12 - x13 is the imbalance
-        num_switchings = count_partner_switchings(imbalance)
-        switchings.append(num_switchings)
-
-    return switchings
-
-def plot_bifurcation_diagram(a3_range, switchings):
-    plt.figure(figsize=(10, 6))
-    plt.plot(a3_range, switchings, 'b-')
-    plt.xlabel('Appeal of Jim (A3)')
-    plt.ylabel('Number of Partner Switchings')
-    plt.title('Bifurcation Diagram')
-    plt.grid(True)
-    plt.show()
     
 def calculate_integral_balance(t, solution):
     # Assuming x21 represents Jules' feelings towards the central partner
@@ -274,14 +247,10 @@ def calculate_gradient(heatmap_data, a1_range, a3_range):
 if __name__ == '__main__':
     t = np.linspace(0, 50, 1000)
     initial_conditions = [0, 0, 0, 0]
-    a1_range = np.linspace(0, 20, 100) 
-    a3_range = np.linspace(0, 20, 100)
+    a1_range = np.linspace(0, 20, 10) 
+    a3_range = np.linspace(0, 20, 10)
 
-    # # Simulate for a range of A3 values
-    # switchings = simulate_for_a3_range(a3_range, initial_conditions, params, t)
 
-    # # Plot the bifurcation diagram
-    # plot_bifurcation_diagram(a3_range, switchings)
     
 
     # Generate heatmap data
@@ -290,18 +259,9 @@ if __name__ == '__main__':
     # Plot the heatmap
     plot_integral_balance_heatmap(a3_range, a1_range, heatmap_data)
     
-    # gradient_magnitude = calculate_gradient(heatmap_data, a3_range, a1_range)
 
-    # # You can plot the gradient magnitude as a heatmap to visualize where the largest changes are occurring
-    # plt.figure(figsize=(10, 8))
-    # plt.imshow(gradient_magnitude, extent=[a3_range[0], a3_range[-1], a1_range[0], a1_range[-1]],
-    #         aspect='auto', cmap='viridis', interpolation='nearest')
-    # plt.colorbar(label='Gradient Magnitude of Integral Balance')
-    # plt.xlabel('Appeal of Jim (A3)')
-    # plt.ylabel('Appeal of Kathe (A1)')
-    # plt.title('Gradient Magnitude Heatmap')
-    # plt.grid(False)
-    # plt.show()
+
+
 
 
 

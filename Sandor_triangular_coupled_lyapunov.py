@@ -116,7 +116,7 @@ params = [
 
 
 initial_conditions = [0, 0, 0, 0]
-t = np.linspace(0, 20, 1000) 
+t = np.linspace(0, 20, 100) 
 solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
 
 

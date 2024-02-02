@@ -112,40 +112,6 @@ def update_plot():
     plt.show()
 
 
-def update_plotly():
-    sol = calculateODE(initial_conditions, params)
-    [t, xa] = [sol.t, sol.y]
-
-    # 3D plot using Plotly
-    fig = go.Figure()
-
-    # Adding trace for Yorgo
-    fig.add_trace(go.Scatter3d(
-        x=xa[2], y=xa[0], z=xa[4],
-        mode='markers',
-        marker=dict(size=5, color='blue', opacity=0.5),
-        name="Yorgo"
-    ))
-
-    # Adding trace for Xena
-    fig.add_trace(go.Scatter3d(
-        x=xa[3], y=xa[1], z=xa[5],
-        mode='markers',
-        marker=dict(size=5, color='red', opacity=0.5),
-        name="Xena"
-    ))
-
-    # Setting labels and limits
-    fig.update_layout(
-        scene=dict(
-            xaxis=dict(title='Passion', range=[-10, 10]),
-            yaxis=dict(title='Intimacy', range=[-10, 10]),
-            zaxis=dict(title='Commitment', range=[-10, 10])
-        ),
-        margin=dict(r=10, l=10, b=10, t=10)
-    )
-
-    fig.show()
 
 # Parameters
 # Intimacy and Passion Dynamics for Xena

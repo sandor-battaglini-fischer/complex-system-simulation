@@ -23,12 +23,9 @@ def save_frame():
 
 
 
-# turtle.shape("turtle")   
-# turtle.shapesize(1.5)
-
-
 def draw_heart(iterations, initial_chaos, chaos_increment):
-    chaos_factor = initial_chaos  # Starting chaos factor
+    chaos_factor = initial_chaos
+
 
     for iteration in range(iterations):
         prev_x, prev_y = None, None
