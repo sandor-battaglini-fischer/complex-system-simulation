@@ -1,7 +1,7 @@
 """Phase portrait plotting function"""
 
 # Author: Yehui He <yehui.he@hotmail.com>
-          Sándor Battaglini-Fischer <>
+#         Sándor Battaglini-Fischer <>
 
 # License: MIT
 
