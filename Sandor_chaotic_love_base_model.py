@@ -11,11 +11,13 @@ Base model of insecure and biased individuals without environmental stress.
 """
 
 def love_dynamics(y, t, p):
+
     """ 
     Model of the love dynamics.
     
     """
     
+
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
