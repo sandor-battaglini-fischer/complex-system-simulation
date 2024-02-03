@@ -3,8 +3,19 @@ import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.signal import find_peaks
 
+""" 
+Model of Love Dynamics 
+from chapter 11 of the book.
+
+Base model of insecure and biased individuals with environmental stress.
+
+"""
 
 def love_dynamics(y, t, p, epsilon, omega):
+    """ 
+    Model of the love dynamics.
+    
+    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
@@ -20,7 +31,7 @@ def love_dynamics(y, t, p, epsilon, omega):
     return [dx1dt, dx2dt]
 
 
-# Parameters
+# Parameters with values from the book
 params = [
     0.36,   # alpha1    =   Forgetting coefficient 1 (decay rate of love of Romeo in absence of partner)
     0.2,    # alpha2    =   Forgetting coefficient 2
@@ -30,7 +41,7 @@ params = [
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
     2.9,    # bA1       =   Bias coefficient of Romeo (how much Romeo is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    0.15,    # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
+    0.15,   # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
     0.08,   # k1        =   Insecurity of Romeo (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2
@@ -52,42 +63,53 @@ t = np.linspace(0, 208, 1000000)
 
 solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 
+def enviromental_stress_plot(t, solution):
+    """ 
+    Generate a plot of the love dynamics with environmental stress.
+    """
+    
+    # Plot
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
-# Plot
-fig, axs = plt.subplots(1, 2, figsize=(12, 5))
-
-# Time series
-axs[0].plot(t, solution[:, 0], label='Partner 1', color='tab:blue')
-axs[0].plot(t, solution[:, 1], label='Partner 2', color='tab:pink')
-axs[0].set_xlabel('Time (weeks)')
-axs[0].set_ylabel('Feelings')
-axs[0].set_title('Dynamics of Romantic Relationship with Environmental Stress')
-axs[0].legend()
-axs[0].grid(True)
-
-
-# Peaks
-x1_data = solution[:, 0]
-
-peaks, _ = find_peaks(x1_data)
-peak_values = x1_data[peaks]
-
-h_peaks = peak_values[:-1] 
-hp1_peaks = peak_values[1:]
+    # Time series
+    axs[0].plot(t, solution[:, 0], label='Partner 1', color='tab:blue')
+    axs[0].plot(t, solution[:, 1], label='Partner 2', color='tab:pink')
+    axs[0].set_xlabel('Time (weeks)')
+    axs[0].set_ylabel('Feelings')
+    axs[0].set_title('Dynamics of Romantic Relationship with Environmental Stress')
+    axs[0].legend()
+    axs[0].grid(True)
 
 
-# PPP Diagram
-axs[1].scatter(h_peaks, hp1_peaks, color='blue', s=1)
-axs[1].set_xlabel(r'$x_{1, h}$ (Partner 1 Peak h)')
-axs[1].set_ylabel(r'$x_{1, h+1}$ (Partner 1 Peak h+1)')
-axs[1].set_title('Peak-to-Peak Plot (PPP) for Partner 1')
-axs[1].grid(True)
+    # Peaks
+    x1_data = solution[:, 0]
 
-fig.tight_layout()
-plt.show()
+    peaks, _ = find_peaks(x1_data)
+    peak_values = x1_data[peaks]
+
+    h_peaks = peak_values[:-1] 
+    hp1_peaks = peak_values[1:]
+
+
+    # PPP Diagram
+    axs[1].scatter(h_peaks, hp1_peaks, color='blue', s=1)
+    axs[1].set_xlabel(r'$x_{1, h}$ (Partner 1 Peak h)')
+    axs[1].set_ylabel(r'$x_{1, h+1}$ (Partner 1 Peak h+1)')
+    axs[1].set_title('Peak-to-Peak Plot (PPP) for Partner 1')
+    axs[1].grid(True)
+
+    fig.tight_layout()
+    fig.savefig('plots/environmental_stress_dynamics.png')
+
 
 
 def largest_lyapunov_exponent(func, initial_conditions, params, epsilon, omega, delta=0.0001, T=208, dt=0.02):
+    
+    """ 
+    Calculate the largest Lyapunov exponent of the love dynamics.
+    
+    """
+    
     t = np.arange(0, T, dt)
     n = len(t)
     
@@ -102,18 +124,9 @@ def largest_lyapunov_exponent(func, initial_conditions, params, epsilon, omega, 
 
     return lyapunov
 
-def lyapunov_exponent(data):
-    N = len(data)
-    eps = 0.0001
-    lyapunovs = []
-    for i in range(N):
-        for j in range(i + 1, N):
-            if np.abs(data[i] - data[j]) < eps:
-                for k in range(1, min(N - i, N - j)):
-                    d0 = np.abs(data[i] - data[j])
-                    dn = np.abs(data[i + k] - data[j + k])
-                    lyapunovs.append(np.log(dn / d0))
-    return np.mean(lyapunovs)
 
-LLE = largest_lyapunov_exponent(love_dynamics, initial_conditions, params, epsilon, omega)
-print("Largest Lyapunov Exponent:", LLE)
+if __name__ == '__main__':
+    
+    LLE = largest_lyapunov_exponent(love_dynamics, initial_conditions, params, epsilon, omega)
+    print("Largest Lyapunov Exponent:", LLE)
+    enviromental_stress_plot(t, solution)

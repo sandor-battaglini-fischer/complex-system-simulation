@@ -41,6 +41,9 @@ def largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega, de
     return lyapunov
 
 def compute_LLE_for_params(param_tuple):
+    """
+    Compute the largest Lyapunov exponent for a given set of parameters.
+    """
     A1, epsilon = param_tuple
     print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
     return largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
@@ -75,6 +78,11 @@ initial_conditions = [0.895, 1.5]
 omega = 2 * np.pi / 52
 
 if __name__ == '__main__':
+    
+    """ 
+    Compute the largest Lyapunov exponent for different values of A1 and epsilon and plot the results.
+    
+    """
 
     A1_values = np.linspace(0.05, 0.19, 1000)
     epsilon_values = np.linspace(0, 1, 100)

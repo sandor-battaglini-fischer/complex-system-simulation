@@ -11,6 +11,11 @@ Base model of insecure and biased individuals without environmental stress.
 """
 
 def love_dynamics(y, t, p):
+    """ 
+    Model of the love dynamics.
+    
+    """
+    
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
@@ -47,33 +52,38 @@ params = [
     1       # sigma2    =   Saddle quantity of 2
 ]
 
+if __name__ == '__main__':
+    
+    """ 
+    Here we plot the time series and phase diagram of the love dynamics.
+    
+    """
+    # Initial conditions
+    initial_conditions = [1, 1.5]
+    t = np.linspace(0, 50, 1000)
 
-initial_conditions = [1, 1.5]
-t = np.linspace(0, 50, 1000)
-
-solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
+    solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
 
 
-# Plot
-fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+    # Plot
+    fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
-# Time series
-axs[0].plot(t, solution[:, 0], label='Romeo', color='tab:blue')
-axs[0].plot(t, solution[:, 1], label='Juliet', color='tab:pink')
-axs[0].set_xlabel('Time')
-axs[0].set_ylabel('Feelings')
-axs[0].set_title('Dynamics of Romantic Relationship')
-axs[0].legend()
-axs[0].grid(True)
+    # Time series
+    axs[0].plot(t, solution[:, 0], label='Romeo', color='tab:blue')
+    axs[0].plot(t, solution[:, 1], label='Juliet', color='tab:pink')
+    axs[0].set_xlabel('Time')
+    axs[0].set_ylabel('Feelings')
+    axs[0].set_title('Dynamics of Romantic Relationship')
+    axs[0].legend()
+    axs[0].grid(True)
 
-# Phase diagram
-axs[1].plot(solution[:, 0], solution[:, 1])
-axs[1].set_xlabel('x1')
-axs[1].set_ylabel('x2')
-axs[1].set_title('Phase Diagram')
-axs[1].grid(True)
-
-fig.tight_layout()
-
-plt.show()
+    # Phase diagram
+    axs[1].plot(solution[:, 0], solution[:, 1])
+    axs[1].set_xlabel('x1')
+    axs[1].set_ylabel('x2')
+    axs[1].set_title('Phase Diagram')
+    axs[1].grid(True)
+    
+    fig.tight_layout()
+    plt.savefig('plots/base_model.png')
 

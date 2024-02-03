@@ -4,14 +4,33 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from mpl_toolkits.mplot3d import Axes3D
-import pickle
-import multiprocessing
 import plotly.graph_objects as go
 random.seed(0)
 num = 0
 
+""" 
+
+The following system of ordinary differential equations (ODEs) 
+models the dynamics of love and commitment between two people, Xena and Yorgo. 
+The system is a 6-dimensional dynamical system.
+The coefficients are defined in the code below.
+
+The script outputs 4 plots: a 3D plot of the dynamics between Xena and Yorgo
+and 3 2D projections of the 3D plot.
+It also gives the Largest Lyapunov Exponent of the system.
+
+The ODE is based on the following papers and ideas:
+- Triangular theory of love by Robert Sternberg
+- Erbaş, Kadir. (2022). Modeling Love with 4D Dynamical System. Chaos Theory and Applications. 4. 10.51537/chaos.1131966
+
+"""
+
 
 def calculateODE(initial_conditions, params):
+    """ 
+    This function sets up and solves the ODE.
+    
+    """
     A = np.array([[axx, axy, bxx, bxy, lxx, lxy],
                   [ayx, ayy, byx, byy, lyx, lyy],
                   [cxx, cxy, dxx, dxy, nxx, nxy],
@@ -25,6 +44,11 @@ def calculateODE(initial_conditions, params):
 
 
 def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, dt=0.02):
+    """ 
+    This function calculates the largest Lyapunov exponent of the system.
+    
+    """
+    
     t = np.arange(0, T, dt)
     n = len(t)
 
@@ -43,10 +67,16 @@ def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, d
 
 
 def update_plot():
+    """ 
+    This function creates the 3D and 2D plots of the dynamics between Xena and Yorgo.
+    
+    """
+    
+    
     sol = calculateODE(initial_conditions, params)
     [t, xa] = [sol.t, sol.y]
 
-    # Save each plot separately
+
     # 3D plot
     fig1 = plt.figure(figsize=(6, 6))
     ax1 = fig1.add_subplot(111, projection='3d')
@@ -56,7 +86,6 @@ def update_plot():
     ax1.set_ylabel('Intimacy')
     ax1.set_zlabel('Commitment')
     ax1.legend()
-        # Set wider limits for the axes to "zoom out"
     ax1.set_xlim([min(xa[2])-5, max(xa[2])+5])
     ax1.set_ylim([min(xa[0])-5, max(xa[0])+5])
     ax1.set_zlim([min(xa[4])-5, max(xa[4])+5])
@@ -108,12 +137,12 @@ def update_plot():
     plt.tight_layout()
     plt.savefig('plots/love_yz.png', dpi=500)
 
-    plt.tight_layout()
-    plt.show()
 
 
 
-# Parameters
+"""
+    The coefficients of the system are defined below.
+"""
 # Intimacy and Passion Dynamics for Xena
 axx = -0.2  # Forgetting coefficient of the intimacy of Xena to Yorgo.
 axy = -0.4  # If Yorgo’s intimacy increases, Xena’s will decrease, and if it decreases, it will increase.
