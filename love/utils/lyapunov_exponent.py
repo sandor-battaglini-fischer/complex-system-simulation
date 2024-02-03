@@ -13,7 +13,8 @@ between two nearby trajectories in phase space
 
 import numpy as np
 
-def lyapunov_exponent(data, eps):
+
+def lyapunov_exponent(data, eps=0.0001):
     """
     Lyapunov characteristic exponent of a dynamical system.
 
@@ -25,7 +26,7 @@ def lyapunov_exponent(data, eps):
     data : series, np.array 
         Data for the calculation.
     eps : float
-        Threshold.
+        Threshold. (default 0.0001)
 
     Returns
     -------
