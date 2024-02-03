@@ -100,7 +100,7 @@ def random_initial_vector():
     return A
 
 def randomize_parameter_network(G, number_of_nodes):
-    """randomiz parameters of a network
+    """randomize parameters of a network
 
     Args:
         G (Graph): graph of the network

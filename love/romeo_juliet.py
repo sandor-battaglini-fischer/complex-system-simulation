@@ -6,7 +6,9 @@
 
 
 __all__ = ["romeo_juliee"]
-
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import odeint
 
 def romeo_juliet(z, t, a, b, c, d):
     """
@@ -50,6 +52,12 @@ def romeo_juliet(z, t, a, b, c, d):
     return res 
 
 def plot_phase_portrait(func, params):
+    """plots phase portrait
+
+    Args:
+        func (function): function 
+        params (array): parameters to use with func
+    """
     x = np.linspace(-10, 10, 20)
     y = np.linspace(-10, 10, 20)
     xv, yv = np.meshgrid(x, y)

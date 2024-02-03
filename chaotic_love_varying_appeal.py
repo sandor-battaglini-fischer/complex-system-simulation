@@ -5,9 +5,32 @@ from scipy.signal import find_peaks
 
 
 def time_varying_appeal(t, A1, epsilon, omega):
+    """
+    Args:
+        t (array): time interval
+        A1 (float): parameter
+        epsilon (float): parameter
+        omega (float): parameter
+
+    Returns:
+        float: appeal based on time
+    """
     return A1 * (1 + epsilon * np.sin(omega * t))
 
 def love_dynamics(y, t, p, A1, epsilon, omega):
+    """differential equation model
+
+    Args:
+        y (array): arrya of initial conditions
+        t (array): time intervals
+        p (array): parameters to use
+        A1 (float): parameter
+        epsilon (float): parameter
+        omega (float): parameter
+
+    Returns:
+        array: array of differential equation results
+    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 

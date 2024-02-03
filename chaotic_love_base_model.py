@@ -11,6 +11,16 @@ Base model of insecure and biased individuals without environmental stress.
 """
 
 def love_dynamics(y, t, p):
+    """differential equation model
+
+    Args:
+        y (array): arrya of initial conditions
+        t (array): time intervals
+        p (array): parameters to use
+
+    Returns:
+        array: array of differential equation results
+    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
