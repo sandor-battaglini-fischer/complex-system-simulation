@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
+from scipy.signal import find_peaks
+import time
+from multiprocessing import Pool
 
 # Names for the central partner and the two lovers
 central_partner = "Woman"
@@ -60,10 +63,10 @@ params = [
     1,    # gamma3: reaction coefficient to appeal for Jim (years^-1)
     0.0062,   # epsilon: sensitivity of reaction to love for Kathe (coupling constant)
     0.0285,    # delta: sensitivity of reaction to love for Jules and Jim (coupling constant)
-    11,   # A1: appeal of Kathe (dimensionless)
+    20,   # A1: appeal of Kathe (dimensionless)
     4,    # A2: appeal of Jules (dimensionless)
-    10,    # A3: appeal of Jim (dimensionless)
-    1,  # tauI12: insecurity threshold for Kathe's reaction to Jules' love
+    5,    # A3: appeal of Jim (dimensionless)
+    2.5,  # tauI12: insecurity threshold for Kathe's reaction to Jules' love
     10,   # sigmaL12: sensitivity of reaction to love for Kathe to Jules
     10.5, # sigmaI12: sensitivity of insecurity for Kathe to Jules
     9,    # tau_S: synergism threshold for Kathe
@@ -77,73 +80,80 @@ params = [
     2,    # s: synergism coefficient for Kathe
 ]
 
-initial_conditions = [0, 0, 0, 0]
-t = np.linspace(0, 20, 1000) 
-solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
 
-# Extract solutions
-x12, x13, x21, x31 = solution.T
+def default_triangular_plot():
 
-# Plotting
-fig, axs = plt.subplots(3, 2, figsize=(12, 12))
+    initial_conditions = [0, 0, 0, 0]
+    t = np.linspace(0, 20, 1000) 
+    solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
 
-# Dynamics between central partner and lover1
-axs[0, 0].plot(t, x12, label=f'{central_partner} to {lover1}', color='tab:pink')
-axs[0, 0].plot(t, x21, label=f'{lover1} to {central_partner}', color='tab:blue')
-axs[0, 0].set_xlabel('Time (years)')
-axs[0, 0].set_ylabel('Feelings')
-axs[0, 0].set_title(f'{central_partner}-{lover1} Dynamics')
-axs[0, 0].legend()
-axs[0, 0].grid(True)
+    # Extract solutions
+    x12, x13, x21, x31 = solution.T
 
-# Phase diagram between central partner and lover1
-axs[0, 1].plot(x12, x21)
-axs[0, 1].set_xlabel(f'Feelings of {central_partner} towards {lover1}')
-axs[0, 1].set_ylabel(f'Feelings of {lover1} towards {central_partner}')
-axs[0, 1].set_title('Phase Diagram')
-axs[0, 1].grid(True)
+    # Plotting
+    fig, axs = plt.subplots(3, 2, figsize=(12, 12))
 
-# Dynamics between central partner and lover2
-axs[1, 0].plot(t, x13, label=f'{central_partner} to {lover2}', color='tab:pink')
-axs[1, 0].plot(t, x31, label=f'{lover2} to {central_partner}', color='tab:green')
-axs[1, 0].set_xlabel('Time (years)')
-axs[1, 0].set_ylabel('Feelings')
-axs[1, 0].set_title(f'{central_partner}-{lover2} Dynamics')
-axs[1, 0].legend()
-axs[1, 0].grid(True)
+    # Dynamics between central partner and lover1
+    axs[0, 0].plot(t, x12, label=f'{central_partner} to {lover1}', color='tab:pink')
+    axs[0, 0].plot(t, x21, label=f'{lover1} to {central_partner}', color='tab:blue')
+    axs[0, 0].set_xlabel('Time (years)')
+    axs[0, 0].set_ylabel('Feelings')
+    axs[0, 0].set_title(f'{central_partner}-{lover1} Dynamics')
+    axs[0, 0].legend()
+    axs[0, 0].grid(True)
 
-# Phase diagram between central partner and lover2
-axs[1, 1].plot(x13, x31)
-axs[1, 1].set_xlabel(f'Feelings of {central_partner} towards {lover2}')
-axs[1, 1].set_ylabel(f'Feelings of {lover2} towards {central_partner}')
-axs[1, 1].set_title('Phase Diagram')
-axs[1, 1].grid(True)
+    # Phase diagram between central partner and lover1
+    axs[0, 1].plot(x12, x21)
+    axs[0, 1].set_xlabel(f'Feelings of {central_partner} towards {lover1}')
+    axs[0, 1].set_ylabel(f'Feelings of {lover1} towards {central_partner}')
+    axs[0, 1].set_title('Phase Diagram')
+    axs[0, 1].grid(True)
 
-# Imbalance plot
-imbalance = x12 - x13
-zero_crossings = np.where(np.diff(np.sign(imbalance)))[0]
-times_of_zero_crossings = t[zero_crossings] + \
-                          (t[zero_crossings + 1] - t[zero_crossings]) * \
-                          (0 - imbalance[zero_crossings]) / \
-                          (imbalance[zero_crossings + 1] - imbalance[zero_crossings])
+    # Dynamics between central partner and lover2
+    axs[1, 0].plot(t, x13, label=f'{central_partner} to {lover2}', color='tab:pink')
+    axs[1, 0].plot(t, x31, label=f'{lover2} to {central_partner}', color='tab:green')
+    axs[1, 0].set_xlabel('Time (years)')
+    axs[1, 0].set_ylabel('Feelings')
+    axs[1, 0].set_title(f'{central_partner}-{lover2} Dynamics')
+    axs[1, 0].legend()
+    axs[1, 0].grid(True)
 
-axs[2, 0].plot(t, imbalance, color='tab:pink')
-axs[2, 0].scatter(times_of_zero_crossings, np.zeros_like(times_of_zero_crossings), color='red', zorder=5)
-axs[2, 0].fill_between(t, imbalance, where=(imbalance > 0), color='tab:blue', alpha=0.3)
-axs[2, 0].fill_between(t, imbalance, where=(imbalance < 0), color='tab:green', alpha=0.3)
-axs[2, 0].axhline(y=0, color='black', linestyle='--')
-axs[2, 0].set_xlabel('Time (years)')
-axs[2, 0].set_ylabel(f'Imbalance of {central_partner}\'s feelings \n towards {lover1} (>0) and {lover2} (<0)')
-axs[2, 0].set_title('Imbalance Over Time')
-axs[2, 0].grid(True)
+    # Phase diagram between central partner and lover2
+    axs[1, 1].plot(x13, x31)
+    axs[1, 1].set_xlabel(f'Feelings of {central_partner} towards {lover2}')
+    axs[1, 1].set_ylabel(f'Feelings of {lover2} towards {central_partner}')
+    axs[1, 1].set_title('Phase Diagram')
+    axs[1, 1].grid(True)
 
-number_of_zeros = len(times_of_zero_crossings) - 2
-axs[2, 1].text(0.5, 0.5, f'Partner switching: {number_of_zeros}', 
-               horizontalalignment='center', 
-               verticalalignment='center', 
-               fontsize=16, 
-               transform=axs[2, 1].transAxes)
-axs[2, 1].axis('off')
+    # Imbalance plot
+    imbalance = x12 - x13
+    zero_crossings = np.where(np.diff(np.sign(imbalance)))[0]
+    times_of_zero_crossings = t[zero_crossings] + \
+                            (t[zero_crossings + 1] - t[zero_crossings]) * \
+                            (0 - imbalance[zero_crossings]) / \
+                            (imbalance[zero_crossings + 1] - imbalance[zero_crossings])
 
-fig.tight_layout()
-plt.show()
+    axs[2, 0].plot(t, imbalance, color='tab:pink')
+    axs[2, 0].scatter(times_of_zero_crossings, np.zeros_like(times_of_zero_crossings), color='red', zorder=5)
+    axs[2, 0].fill_between(t, imbalance, where=(imbalance > 0), color='tab:blue', alpha=0.3)
+    axs[2, 0].fill_between(t, imbalance, where=(imbalance < 0), color='tab:green', alpha=0.3)
+    axs[2, 0].axhline(y=0, color='black', linestyle='--')
+    axs[2, 0].set_xlabel('Time (years)')
+    axs[2, 0].set_ylabel(f'Imbalance of {central_partner}\'s feelings \n towards {lover1} (>0) and {lover2} (<0)')
+    axs[2, 0].set_title('Imbalance Over Time')
+    axs[2, 0].grid(True)
+
+    number_of_zeros = len(times_of_zero_crossings) - 2
+    axs[2, 1].text(0.5, 0.5, f'Partner switching: {number_of_zeros}', 
+                horizontalalignment='center', 
+                verticalalignment='center', 
+                fontsize=16, 
+                transform=axs[2, 1].transAxes)
+    axs[2, 1].axis('off')
+
+    fig.tight_layout()
+    plt.show()
+    
+
+
+default_triangular_plot()

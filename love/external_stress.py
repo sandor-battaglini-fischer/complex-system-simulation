@@ -2,20 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 from scipy.signal import find_peaks
+import time
+from multiprocessing import Pool
 
-""" 
-Model of Love Dynamics 
-from chapter 11 of the book.
-
-Base model of insecure and biased individuals with environmental stress.
-
-"""
+  
 
 def love_dynamics(y, t, p, epsilon, omega):
-    """ 
-    Model of the love dynamics.
-    
-    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
@@ -30,8 +22,32 @@ def love_dynamics(y, t, p, epsilon, omega):
 
     return [dx1dt, dx2dt]
 
+def largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
+    t = np.arange(0, T, dt)
+    n = len(t)
+    
+    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
 
-# Parameters with values from the book
+    updated_params = params.copy()
+    updated_params[8] = A1 
+    
+    sol1 = odeint(love_dynamics, initial_conditions, t, args=(updated_params, epsilon, omega))
+    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(updated_params, epsilon, omega))
+
+    divergence = np.linalg.norm(sol2 - sol1, axis=1)
+    divergence = np.ma.masked_where(divergence == 0, divergence)
+    lyapunov = 1/n * np.sum(np.log(divergence/delta))
+
+    return lyapunov
+
+def compute_LLE_for_params(param_tuple):
+    A1, epsilon = param_tuple
+    print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
+    return largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
+
+
+
+# Parameters
 params = [
     0.36,   # alpha1    =   Forgetting coefficient 1 (decay rate of love of Romeo in absence of partner)
     0.2,    # alpha2    =   Forgetting coefficient 2
@@ -41,7 +57,7 @@ params = [
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
     2.9,    # bA1       =   Bias coefficient of Romeo (how much Romeo is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    0.15,   # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
+    0.15,  # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
     0.08,   # k1        =   Insecurity of Romeo (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2
@@ -53,21 +69,22 @@ params = [
     1       # sigma2    =   Saddle quantity of 2
 ]
 
+def plot_LLE_values(LLE_values, A1_values, epsilon_values):
+    plt.figure(figsize=(8, 6))
+    plt.imshow(LLE_values, cmap='seismic', vmin=-2, vmax=2, extent=[epsilon_values.min(), epsilon_values.max(), A1_values.min(), A1_values.max()], aspect='auto', origin='lower')
+    plt.colorbar(label='Largest Lyapunov Exponent')
+    plt.xlabel('Variability (epsilon)')
+    plt.ylabel('Mean Appeal (A1)')
+    plt.title(r'Heatmap of LLE for different Mean Appeals ($A_1$) and Variability ($\epsilon$)')
+    plt.show()
 
-epsilon = 0.26
-omega = 2 * np.pi / 52
+
+def plot_dynamics():
 
 
-initial_conditions = [0.895, 1.5]
-t = np.linspace(0, 208, 1000000)
+    solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 
-solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 
-def enviromental_stress_plot(t, solution):
-    """ 
-    Generate a plot of the love dynamics with environmental stress.
-    """
-    
     # Plot
     fig, axs = plt.subplots(1, 2, figsize=(12, 5))
 
@@ -99,34 +116,38 @@ def enviromental_stress_plot(t, solution):
     axs[1].grid(True)
 
     fig.tight_layout()
-    fig.savefig('plots/environmental_stress_dynamics.png')
+    fig.savefig('plots/love_time_varying_appeal.png', dpi=500)
 
 
-
-def largest_lyapunov_exponent(func, initial_conditions, params, epsilon, omega, delta=0.0001, T=208, dt=0.02):
-    
-    """ 
-    Calculate the largest Lyapunov exponent of the love dynamics.
-    
-    """
-    
-    t = np.arange(0, T, dt)
-    n = len(t)
-    
-    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
-
-    sol1 = odeint(func, initial_conditions, t, args=(params, epsilon, omega))
-    sol2 = odeint(func, perturbed_initial, t, args=(params, epsilon, omega))
-
-    divergence = np.linalg.norm(sol2 - sol1, axis=1)
-    divergence = np.ma.masked_where(divergence == 0, divergence)
-    lyapunov = 1/n * np.sum(np.log(divergence/delta))
-
-    return lyapunov
-
+initial_conditions = [0.895, 1.5]
+omega = 2 * np.pi / 52
 
 if __name__ == '__main__':
+    t = np.linspace(0, 208, 1000000)
+    A1_values = np.linspace(0.05, 0.19, 1000)
+    epsilon_values = np.linspace(0, 1, 100)
+    epsilon = 0.26
+
+    param_combinations = [(A1, epsilon) for A1 in A1_values for epsilon in epsilon_values]
+
+    start_time = time.time()
+
+    with Pool() as pool:
+        results = pool.map(compute_LLE_for_params, param_combinations)
+
+    LLE_values = np.array(results).reshape(len(A1_values), len(epsilon_values))
+
+    end_time = time.time()
+    print(f"Total runtime: {end_time - start_time:.2f} seconds")
+
+    # Plot the dynamics
+    plot_dynamics()
     
+    # Plot LLE values
+    plot_LLE_values(LLE_values, A1_values, epsilon_values)
+    
+    # Compute LLE for a specific set of parameters
     LLE = largest_lyapunov_exponent(love_dynamics, initial_conditions, params, epsilon, omega)
     print("Largest Lyapunov Exponent:", LLE)
-    enviromental_stress_plot(t, solution)
+
+    
