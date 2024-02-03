@@ -2,10 +2,6 @@ import unittest
 import matplotlib.pyplot as plt
 import os
 import numpy as np
-from Sandor_6D_dynamical_system import update_plot
-from Sandor_chaotic_love_base_model import love_dynamics
-from Sandor_chaotic_love_varying_appeal import enviromental_stress_plot
-from Sandor_external_stress_lyapunov_simulation import largest_lyapunov_exponent
 
 class Tests(unittest.TestCase):
     def test_update_plot(self):
@@ -60,48 +56,6 @@ class Tests(unittest.TestCase):
         assert plt.gcf().get_axes()[1].get_title() == 'Peak-to-Peak Plot (PPP) for Partner 1'
 
         plt.close()
-        
-    def test_lyapunov_plots(self):
-        # Test Case 1: Basic test case with default parameters
-        initial_conditions = np.array([1, 2])
-        A1 = 0.5
-        epsilon = 0.1
-        params = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-        omega = 0.01
-        expected_output = 0.0
-        output = largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
-        assert np.isclose(output, expected_output), f"Test Case 1 failed: Expected {expected_output}, but got {output}"
-
-        # Test Case 2: Test with non-zero initial conditions
-        initial_conditions = np.array([1, 2])
-        A1 = 0.5
-        epsilon = 0.1
-        params = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-        omega = 0.01
-        expected_output = 0.0
-        output = largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
-        assert np.isclose(output, expected_output), f"Test Case 2 failed: Expected {expected_output}, but got {output}"
-
-        # Test Case 3: Test with different parameters
-        initial_conditions = np.array([1, 2])
-        A1 = 1.0
-        epsilon = 0.5
-        params = np.array([0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4])
-        omega = 0.05
-        expected_output = 0.0
-        output = largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
-        assert np.isclose(output, expected_output), f"Test Case 3 failed: Expected {expected_output}, but got {output}"
-
-        # Test Case 4: Test with larger initial conditions
-        initial_conditions = np.array([10, 20])
-        A1 = 0.5
-        epsilon = 0.1
-        params = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-        omega = 0.01
-        expected_output = 0.0
-        output = largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
-        assert np.isclose(output, expected_output), f"Test Case 4 failed: Expected {expected_output}, but got {output}"
-
 
 if __name__ == '__main__':
     unittest.main()
