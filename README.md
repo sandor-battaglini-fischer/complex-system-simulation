@@ -22,6 +22,7 @@ This file sets up basic plotting for the 6D dynamical system based on Sternberg'
 ### `love_dynamics.ipynb`
 Plotting of linear models and Gone with the Wind 
 
+
 ## Usage
 These scripts were run with Python 3.11.0 on MacOS Ventura. 
 
