@@ -25,6 +25,18 @@ lover1 = "Jules"
 lover2 = "Jim"
 
 def largest_lyapunov_exponent(initial_conditions, var, params, T=208, dt=0.04):
+    """Calculates the largest lyapunov exponent for the given parameters
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        var (float): variation of the initial conditions
+        params (list): list of parameters
+        T (int, optional): Time length. Defaults to 208.
+        dt (float, optional): delta time between intervals. Defaults to 0.04.
+
+    Returns:
+        _type_: _description_
+    """
     t = np.arange(0, T, dt)
     n = len(t)
 
@@ -45,12 +57,34 @@ def largest_lyapunov_exponent(initial_conditions, var, params, T=208, dt=0.04):
 
 
 def compute_LLE_for_random_params(initial_conditions, var, params):
+    """Computes the largest lyapunov exponent for the given parameters
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        var (float): variation of the initial conditions
+        params (list): list of parameters
+
+    Returns:
+        float: the value of the largest lyapunov exponent
+    """
     return largest_lyapunov_exponent(initial_conditions, var, params)
 
 
 
 # Kathe's reaction function to love from Jules
 def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
+    """Kathe's reaction function to love from Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauI12 (float): insecurity threshold for Kathe's reaction to Jules' love
+        sigmaL12 (float): sensitivity of reaction to love for Kathe to Jules
+        sigmaI12 (float): sensitivity of insecurity for Kathe to Jules
+        beta12 (float): reaction coefficient to love for Kathe to Jules love(years^-1)
+
+    Returns:
+        float: Kathe's reaction function to love from Jules
+    """
     if x21 >= tauI12:
         return beta12 * x21 / (1 + x21/sigmaL12) * (1 - ((x21 - tauI12) / sigmaI12)**2) / (1 + ((x21 - tauI12) / sigmaI12)**2)
     else:
@@ -58,6 +92,17 @@ def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
 
 # Synergism function of Kathe (j=2,3)
 def S(x1j, tau_S, sigmaS, s):
+    """Synergism function of Kathe (j=2,3)
+
+    Args:
+        x1j (float): love from Jules or Jim
+        tau_S (float): synergism threshold for Kathe
+        sigmaS (float): sensitivity of synergism for Kathe
+        s (float): synergism coefficient for Kathe
+
+    Returns:
+        float: Synergism function of Kathe
+    """
     if x1j >= tau_S:
         return s*((x1j - tau_S) / sigmaS)**2 / (1 + ((x1j - tau_S) / sigmaS)**2)
     else:
@@ -65,6 +110,17 @@ def S(x1j, tau_S, sigmaS, s):
 
 # Platonicity function as defined by Jules
 def P(x21, tauP, p, sigmaP):
+    """Platonicity function as defined by Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauP (float): platonicity threshold for Jules
+        p (float): maximum platonicity for Jules
+        sigmaP (float): sensitivity of platonicity for Jules
+
+    Returns:
+        float: Platonicity function as defined by Jules
+    """
     if x21 >= tauP:
         return p*((x21 - tauP) / sigmaP)**2 / (1 + ((x21 - tauP) / sigmaP)**2)
     else:
@@ -72,6 +128,18 @@ def P(x21, tauP, p, sigmaP):
 
 # Jim's reaction function to love from Kathe
 def RL31(x13, tauI31, beta31, sigmaL31, sigmaI31):
+    """Jim's reaction function to love from Kathe
+
+    Args:
+        x13 (float): love from Kathe
+        tauI31 (float): insecurity threshold for Jim's reaction to love
+        beta31 (float): reaction coefficient to love for Jim
+        sigmaL31 (float): sensitivity of reaction to love for Jim
+        sigmaI31 (float): sensitivity of insecurity for Jim
+
+    Returns:
+        float: Jim's reaction function to love from Kathe
+    """
     if x13 >= tauI31:
         return beta31 * x13 / (1 + x13/sigmaL31) * (1 - ((x13 - tauI31) / sigmaI31)**2) / (1 + ((x13 - tauI31) / sigmaI31)**2)
     else:
@@ -79,6 +147,16 @@ def RL31(x13, tauI31, beta31, sigmaL31, sigmaI31):
 
 
 def love_dynamics(y, t, params):
+    """Love dynamics of Kathe, Jules, and Jim
+
+    Args:
+        y (list): list of data
+        t (list): list of time data
+        params (list): list of parameters
+
+    Returns:
+        list: list of love dynamics
+    """
     x12, x13, x21, x31 = y
     alpha1, alpha2, alpha3, beta21, beta12, beta13, beta31, gamma1, gamma2, gamma3, epsilon, delta, A1, A2, A3, tauI12, sigmaL12, sigmaI12, tau_S, sigmaS, tauP, p, sigmaP, tauI31, sigmaL31, sigmaI31, s = params
 
@@ -126,6 +204,14 @@ t = np.linspace(0, 20, 1000)
 solution = odeint(love_dynamics, initial_conditions, t, args=(params,), atol=1e-6, rtol=1e-3)
 
 def random_parameters_sampling(num_samples):
+    """Randomly samples parameters
+
+    Args:
+        num_samples (int): number of samples
+
+    Returns:
+        list: list of sampled parameters
+    """
     alpha1_range = (1, 5)
     alpha2_range = (1, 5)
     alpha3_range = (1, 5)

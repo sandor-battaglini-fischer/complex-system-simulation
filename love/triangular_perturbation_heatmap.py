@@ -10,6 +10,18 @@ lover2 = "Lover"
 
 # Kathe's reaction function to love from Jules
 def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
+    """Kathe's reaction function to love from Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauI12 (float): insecurity threshold for Kathe's reaction to Jules' love
+        sigmaL12 (float): sensitivity of reaction to love for Kathe to Jules
+        sigmaI12 (float): sensitivity of insecurity for Kathe to Jules
+        beta12 (float): reaction coefficient to love for Kathe to Jules love(years^-1)
+
+    Returns:
+        float: Kathe's reaction function to love from Jules
+    """
     if x21 >= tauI12:
         return beta12 * x21 / (1 + x21/sigmaL12) * (1 - ((x21 - tauI12) / sigmaI12)**2) / (1 + ((x21 - tauI12) / sigmaI12)**2)
     else:
@@ -17,6 +29,17 @@ def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
 
 # Synergism function of Kathe (j=2,3)
 def S(x1j, tau_S, sigmaS, s):
+    """Synergism function of Kathe (j=2,3)
+
+    Args:
+        x1j (float): love from Jules or Jim
+        tau_S (float): synergism threshold for Kathe
+        sigmaS (float): sensitivity of synergism for Kathe
+        s (float): synergism coefficient for Kathe
+
+    Returns:
+        float: Synergism function of Kathe
+    """
     if x1j >= tau_S:
         return s*((x1j - tau_S) / sigmaS)**2 / (1 + ((x1j - tau_S) / sigmaS)**2)
     else:
@@ -24,6 +47,17 @@ def S(x1j, tau_S, sigmaS, s):
 
 # Platonicity function as defined by Jules
 def P(x21, tauP, p, sigmaP):
+    """Platonicity function as defined by Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauP (float): platonicity threshold for Jules
+        p (float): maximum platonicity for Jules
+        sigmaP (float): sensitivity of platonicity for Jules
+
+    Returns:
+        float: Platonicity function as defined by Jules
+    """
     if x21 >= tauP:
         return p*((x21 - tauP) / sigmaP)**2 / (1 + ((x21 - tauP) / sigmaP)**2)
     else:
@@ -31,12 +65,34 @@ def P(x21, tauP, p, sigmaP):
 
 # Jim's reaction function to love from Kathe
 def RL31(x13, tauI31, beta31, sigmaL31, sigmaI31):
+    """Jim's reaction function to love from Kathe
+
+    Args:
+        x13 (float): love from Kathe
+        tauI31 (float): insecurity threshold for Jim's reaction to love
+        beta31 (float): reaction coefficient to love for Jim
+        sigmaL31 (float): sensitivity of reaction to love for Jim
+        sigmaI31 (float): sensitivity of insecurity for Jim
+
+    Returns:
+        float: Jim's reaction function to love from Kathe
+    """
     if x13 >= tauI31:
         return beta31 * x13 / (1 + x13/sigmaL31) * (1 - ((x13 - tauI31) / sigmaI31)**2) / (1 + ((x13 - tauI31) / sigmaI31)**2)
     else:
         return beta31 * x13 / (1 + x13/sigmaL31)
 
 def love_dynamics(y, t, params):
+    """Love dynamics of Kathe, Jules, and Jim
+
+    Args:
+        y (list): list of data
+        t (list): list of time data
+        params (list): list of parameters
+
+    Returns:
+        list: list of love dynamics
+    """
     x12, x13, x21, x31 = y
     alpha1, alpha2, alpha3, beta21, beta12, beta13, beta31, gamma1, gamma2, gamma3, epsilon, delta, A1, A2, A3, tauI12, sigmaL12, sigmaI12, tau_S, sigmaS, tauP, p, sigmaP, tauI31, sigmaL31, sigmaI31, s = params
 
@@ -103,6 +159,13 @@ def perturb_parameters(params, perturbations):
 
 
 def plot_love_dynamics(t, solution, perturbed_solution):
+    """Plot the love dynamics of the central partner and the two lovers
+
+    Args:
+        t (list): list of time data
+        solution (array): array of love dynamics
+        perturbed_solution (array): array of perturbed love dynamics
+    """
     fig, axs = plt.subplots(3, 2, figsize=(12, 12))
     x12, x13, x21, x31 = solution.T
     px12, px13, px21, px31 = perturbed_solution.T
@@ -188,12 +251,29 @@ def plot_love_dynamics(t, solution, perturbed_solution):
     # plt.show()
     
 def count_partner_switchings(time_series):
+    """Count the number of times the time series crosses zero
+
+    Args:
+        time_series (list): list of time series data
+
+    Returns:
+        int: number of times the time series crosses zero
+    """
     # Count the number of times the time series crosses zero
     zero_crossings = np.where(np.diff(np.sign(time_series)))[0]
     return len(zero_crossings)
 
     
 def calculate_integral_balance(t, solution):
+    """Calculate the integral balance between Jules and Jim
+
+    Args:
+        t (list): list of time data
+        solution (array): array of love dynamics
+
+    Returns:
+        float: integral balance between Jules and Jim
+    """
     # Assuming x21 represents Jules' feelings towards the central partner
     # and x31 represents Jim's feelings towards the central partner
     area_jules = np.trapz(solution[:, 2], t)  # Integral for Jules
@@ -202,6 +282,18 @@ def calculate_integral_balance(t, solution):
     return integral_balance
 
 def generate_heatmap_data(a3_range, a1_range, initial_conditions, params_template, t):
+    """Generate heatmap data for the integral balance between Jules and Jim
+
+    Args:
+        a3_range (list): list of appeal of Jim
+        a1_range (list): list of appeal of Kathe
+        initial_conditions (list): list of initial conditions
+        params_template (list): list of parameters
+        t (list): list of time data
+
+    Returns:
+        list: list of heatmap data
+    """
     heatmap_data = np.zeros((len(a3_range), len(a1_range)))
 
     for i in tqdm(range(len(a3_range)), desc='A1 Progress'):
@@ -218,6 +310,13 @@ def generate_heatmap_data(a3_range, a1_range, initial_conditions, params_templat
     return heatmap_data
 
 def plot_integral_balance_heatmap(a1_range, a3_range, heatmap_data):
+    """Plot the heatmap of the integral balance between Jules and Jim
+
+    Args:
+        a1_range (list): list of appeal of Kathe
+        a3_range (list): list of appeal of Jim
+        heatmap_data (list): list of heatmap data
+    """
     # Normalize the heatmap_data around zero
     max_abs_value = np.max(np.abs(heatmap_data))
     norm_heatmap_data = heatmap_data / max_abs_value  # Normalized to [-1, 1]
@@ -233,6 +332,16 @@ def plot_integral_balance_heatmap(a1_range, a3_range, heatmap_data):
     plt.show()
     
 def calculate_gradient(heatmap_data, a1_range, a3_range):
+    """Calculate the gradient of the heatmap data
+
+    Args:
+        heatmap_data (list): list of heatmap data
+        a1_range (list): list of appeal of Kathe
+        a3_range (list): list of appeal of Jim
+
+    Returns:
+        list: sqrt of list of gradient data
+    """
     # Compute the gradient along both axes
     gradient_a3 = np.gradient(heatmap_data, axis=0)
     gradient_a1 = np.gradient(heatmap_data, axis=1)

@@ -9,6 +9,18 @@ from love.utils.lyapunov_exponent import largest_lyapunov_exponent
   
 
 def love_dynamics(y, t, p, epsilon, omega):
+    """differential equaiton of the love dynamics   
+
+    Args:
+        y (array): initial conditions
+        t (array): time intervals
+        p (array): array of paramters
+        epsilon (float): parameter 
+        omega (float): parameter 
+
+    Returns:
+        array: diffrential equation of the love dynamics
+    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2 = p
 
@@ -26,6 +38,14 @@ def love_dynamics(y, t, p, epsilon, omega):
 
 
 def compute_LLE_for_params(param_tuple):
+    """computes the largest lyapunov exponent for the given parameters
+
+    Args:
+        param_tuple (tuple): tuple of parameters
+
+    Returns:
+        float: the value of the largest lyapunov exponent
+    """
     A1, epsilon = param_tuple
     # print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
     return largest_lyapunov_exponent(love_dynamics, initial_conditions, A1, epsilon, params, omega)
@@ -55,6 +75,13 @@ params = [
 ]
 
 def plot_LLE_values(LLE_values, A1_values, epsilon_values):
+    """plots the largest lyapunov exponent values
+
+    Args:
+        LLE_values (list): LLE values
+        A1_values (list): list of A1 values
+        epsilon_values (list): list of epsilon parameters
+    """
     plt.figure(figsize=(8, 6))
     plt.imshow(LLE_values, cmap='seismic', vmin=-2, vmax=2, extent=[epsilon_values.min(), epsilon_values.max(), A1_values.min(), A1_values.max()], aspect='auto', origin='lower')
     plt.colorbar(label='Largest Lyapunov Exponent')
@@ -65,7 +92,16 @@ def plot_LLE_values(LLE_values, A1_values, epsilon_values):
 
 
 def plot_dynamics(t, solution, epsilon, omega, params, initial_conditions):
+    """plots the dynamics of the love model
 
+    Args:
+        t (list): time vlaues
+        solution (list): solutionn values of the love model
+        epsilon (float): parameter
+        omega (float): parameter
+        params (tuple): tuple of parameters
+        initial_conditions (tuple): initial vlaues of solution of the love model
+    """
 
     solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))
 

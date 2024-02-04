@@ -12,6 +12,8 @@ turtle.bgcolor("white")
 frame_number = 0
 
 def save_frame():
+    """saves a frame of the current canvas to a file.
+    """
     global frame_number
     canvas = turtle.getcanvas()
     canvas.postscript(file=f"frame_{frame_number:04}.eps", colormode='color')
@@ -24,6 +26,13 @@ def save_frame():
 
 
 def draw_heart(iterations, initial_chaos, chaos_increment):
+    """draws a heart curve with a chaotic twist.
+
+    Args:
+        iterations (int): number of iterations to draw the heart curve
+        initial_chaos (float): how much to initially perturb the heart curve
+        chaos_increment (float): how much to increase the perturbation each iteration
+    """
     chaos_factor = initial_chaos
 
 

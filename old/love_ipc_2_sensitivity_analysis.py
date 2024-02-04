@@ -15,6 +15,11 @@ random.seed(0)
 
 
 def calculateODE(initial_conditions, params):
+    """Calculates the ODE for the triangular relationship
+
+    Returns:
+        array: array of solve_ivp solutions
+    """
     A = np.array([[axx, axy, bxx, bxy, lxx, lxy],
                   [ayx, ayy, byx, byy, lyx, lyy],
                   [cxx, cxy, dxx, dxy, nxx, nxy],
@@ -28,6 +33,18 @@ def calculateODE(initial_conditions, params):
 
 
 def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, dt=0.02):
+    """calculates the largest lyapunov exponent
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        params (list): list of parameters
+        delta (float, optional): delta value . Defaults to 0.0001.
+        T (int, optional): length of time to calculate. Defaults to 208.
+        dt (float, optional): delta time. Defaults to 0.02.
+
+    Returns:
+        int: largest lyapunov exponent
+    """
     t = np.arange(0, T, dt)
     n = len(t)
 
@@ -49,6 +66,16 @@ def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, d
     return lyapunov
 
 def compute_LLE_for_random_params(initial_conditions, var, params):
+    """Computes the largest lyapunov exponent for the given parameters
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        var (float): variation of the initial conditions
+        params (list): list of parameters
+
+    Returns:
+        float: the value of the largest lyapunov exponent
+    """
     return largest_lyapunov_exponent(initial_conditions, var, params)
 
 
@@ -126,12 +153,30 @@ lle = largest_lyapunov_exponent(initial_conditions, params)
 
 
 def compute_sensitivity_for_random_params(args):
+    """Computes the sensitivity for the given parameters
+
+    Args:
+        args (list): list of parameters
+
+    Returns:
+        list: list of sensitivities
+    """
     initial_conditions, params = args
     return sensitivity_analysis(initial_conditions, params)
 
 
 
 def sensitivity_analysis(initial_conditions, params, num_runs=10000):
+    """Performs sensitivity analysis for the given parameters
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        params (list): list of parameters
+        num_runs (int, optional): number of runs. Defaults to 10000.
+
+    Returns:
+        list: list of sensitivities
+    """
     sensitivities = {f'param_{i}': [] for i in range(len(params))}
 
     for _ in range(num_runs):
@@ -154,6 +199,14 @@ def sensitivity_analysis(initial_conditions, params, num_runs=10000):
 
 
 def random_parameters_sampling(num_samples):
+    """Randomly samples the parameters
+
+    Args:
+        num_samples (int): number of samples
+
+    Returns:
+        list: list of sampled parameters
+    """
     axx_range = (-1, 1)
     axy_range = (-1, 1)
     ayx_range = (-1, 1)

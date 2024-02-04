@@ -6,6 +6,8 @@ from triangular_lyapunov_sensitivity_analysis import love_dynamics, update_plot,
 
 class Tests(unittest.TestCase):
     def test_update_plot(self):
+        """test that the update_plot function works as expected
+        """
 
         update_plot()
 
@@ -20,6 +22,8 @@ class Tests(unittest.TestCase):
         self.assertTrue(plt.fignum_exists(4))
         
     def test_love_dynamics(self):
+        """test that the love_dynamics function works as expected
+        """
         y = [1, 2]
         t = 0
         p = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8]
@@ -31,6 +35,8 @@ class Tests(unittest.TestCase):
         np.testing.assert_allclose(result, expected_result, rtol=1e-5)
         
     def test_enviromental_stress_plot(self):
+        """test that the enviromental_stress_plot function works as expected
+        """
         # Sample data
         t = np.linspace(0, 10, 100)
         solution = np.random.rand(100, 2)
