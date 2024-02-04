@@ -63,6 +63,7 @@ The following material inspired and provided the equations and initial parameter
 sandor.battaglini-fischer@student.uva.nl
 victor.piaskowski@student.uva.nl
 yehui.he@hotmail.com
+thomas.norton@student.uva.nl
 
 ---
 
