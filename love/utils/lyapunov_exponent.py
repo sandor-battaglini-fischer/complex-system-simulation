@@ -57,6 +57,22 @@ def lyapunov_exponent(data, eps=0.0001):
     return np.mean(lyapunovs)
 
 def largest_lyapunov_exponent(love_dynamics, initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
+    """_summary_
+
+    Args:
+        love_dynamics (_type_): _description_
+        initial_conditions (_type_): _description_
+        A1 (_type_): _description_
+        epsilon (_type_): _description_
+        params (_type_): _description_
+        omega (_type_): _description_
+        delta (float, optional): _description_. Defaults to 0.0001.
+        T (int, optional): _description_. Defaults to 208.
+        dt (float, optional): _description_. Defaults to 0.02.
+
+    Returns:
+        _type_: _description_
+    """
     t = np.arange(0, T, dt)
     n = len(t)
     

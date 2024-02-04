@@ -17,6 +17,18 @@ def love_dynamics(y, t, params):
     return [dx1dt, dx2dt, dz2dt]
 
 def largest_lyapunov_exponent(initial_conditions, a1, delta, params, omega, perturbation_delta=0.0001, T=208, dt=0.02):
+    """calculates the largest lyapunov exponent
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        params (list): list of parameters
+        delta (float, optional): delta value . Defaults to 0.0001.
+        T (int, optional): length of time to calculate. Defaults to 208.
+        dt (float, optional): delta time. Defaults to 0.02.
+
+    Returns:
+        int: largest lyapunov exponent
+    """
     t = np.arange(0, T, dt)
     n = len(t)
     
