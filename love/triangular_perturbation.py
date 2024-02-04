@@ -188,9 +188,6 @@ def plot_love_dynamics(t, solution, perturbed_solution):
                    fontsize=10,
                    transform=axs[2, 1].transAxes)
     axs[2, 1].axis('off')
-
-    print(f'Perturbed initial conditions {initial_perturbations} and parameters {parameter_perturbations} \n')
-
     fig.tight_layout()
     plt.show()
 

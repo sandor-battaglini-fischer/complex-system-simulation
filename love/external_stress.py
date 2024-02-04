@@ -42,7 +42,7 @@ def largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega, de
 
 def compute_LLE_for_params(param_tuple):
     A1, epsilon = param_tuple
-    print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
+    # print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
     return largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
 
 
@@ -79,7 +79,7 @@ def plot_LLE_values(LLE_values, A1_values, epsilon_values):
     plt.show()
 
 
-def plot_dynamics():
+def plot_dynamics(t, solution, epsilon, omega, params, initial_conditions):
 
 
     solution = odeint(love_dynamics, initial_conditions, t, args=(params, epsilon, omega))

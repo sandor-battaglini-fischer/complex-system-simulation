@@ -184,6 +184,6 @@ params = [axx, axy, ayx, ayy, bxx, bxy, byx, byy, cxx, cxy, cyx, cyy, dxx, dxy, 
 lle = largest_lyapunov_exponent(initial_conditions, params)
 print("Largest Lyapunov Exponent: ", lle)
 
-update_plot()
+
 
 

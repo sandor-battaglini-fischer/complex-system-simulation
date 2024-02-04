@@ -154,6 +154,3 @@ def default_triangular_plot():
     fig.tight_layout()
     plt.show()
     
-
-
-default_triangular_plot()

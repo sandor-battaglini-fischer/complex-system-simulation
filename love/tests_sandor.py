@@ -2,6 +2,7 @@ import unittest
 import matplotlib.pyplot as plt
 import os
 import numpy as np
+from triangular_lyapunov_sensitivity_analysis import love_dynamics, update_plot, enviromental_stress_plot
 
 class Tests(unittest.TestCase):
     def test_update_plot(self):

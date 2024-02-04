@@ -8,6 +8,7 @@ from multiprocessing import Pool
 from scipy.optimize import curve_fit
 from numpy import random
 import pandas as pd
+import warnings
 
 """ 
 Model of Love Dynamics 
@@ -30,13 +31,15 @@ def largest_lyapunov_exponent(initial_conditions, var, params, T=208, dt=0.04):
     # Generate random perturbations for each state variable
     perturbed_initial = initial_conditions + np.random.normal(0, var, len(initial_conditions))
 
-    sol1 = odeint(love_dynamics, initial_conditions, t, args=(params,))
-    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(params,))
+    sol1 = odeint(love_dynamics, initial_conditions, t, args=(params,), atol=1e-3, rtol=1e-1)
+    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(params,), atol=1e-3, rtol=1e-1)
 
     divergence = np.linalg.norm(sol2 - sol1, axis=1)
     small_constant = 1e-15
     divergence = np.maximum(divergence, small_constant)
     lyapunov = 1/n * np.sum(np.log(divergence/var))
+    
+    warnings.filterwarnings("ignore", category=RuntimeWarning)
 
     return lyapunov
 
@@ -120,7 +123,7 @@ params = [
 
 initial_conditions = [0, 0, 0, 0]
 t = np.linspace(0, 20, 1000) 
-solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
+solution = odeint(love_dynamics, initial_conditions, t, args=(params,), atol=1e-6, rtol=1e-3)
 
 def random_parameters_sampling(num_samples):
     alpha1_range = (1, 5)
@@ -195,6 +198,8 @@ if __name__ == '__main__':
     initial_conditions = [0, 0, 0, 0]
     sampled_params = random_parameters_sampling(num_samples)
     var = 1e-6
+    
+
 
     start_time = time.time()
 
