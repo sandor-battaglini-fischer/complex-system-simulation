@@ -19,6 +19,8 @@ This file includes the plots for the triangular relationships part.
 ### `6d.ipynb`
 This file sets up basic plotting for the 6D dynamical system based on Sternberg's "Triangular Theory of Love"
 
+### `love_dynamics.ipynb`
+Plotting of linear models and Gone with the Wind 
 
 ## Usage
 These scripts were run with Python 3.11.0 on MacOS Ventura. 
@@ -50,11 +52,17 @@ These scripts were run with Python 3.11.0 on MacOS Ventura.
 The following material inspired and provided the equations and initial parameter values for our model:
 * Rinaldi, S., Rossa, F. D., Dercole, F., Gragnani, A., & Landi, P. (2015). Modeling Love Dynamics: Vol. Volume 89. WORLD SCIENTIFIC. https://doi.org/10.1142/9656
 * ERBAŞ, Kadir Can. “Modeling Love with 4D Dynamical System.” Chaos Theory and Applications, vol. 4, no. 3, Akif Akgul, 30 Nov. 2022, pp. 135–143. doi:10.51537/chaos.1131966.​
+* Strogatz, S. H. (1988) Love affairs and differential equations. Math. Magazine 61, 35.
+*  N.V. Kuznetsov; G.A. Leonov (2005). "On stability by the first approximation for discrete systems". Proceedings. 2005 International Conference Physics and Control, 2005. Vol. Proceedings Volume 2005. pp. 596–599.
+* G. A. Leonov; N.V. Kuznetsov (2007). "Time-Varying Linearization and
+ the Perron effects". International Journal of Bifurcation and Chaos. 17 (4): 1079–1107.
+
 
 
 ## Contact
 sandor.battaglini-fischer@student.uva.nl
 victor.piaskowski@student.uva.nl
+yehui.he@hotmail.com
 
 ---
 
