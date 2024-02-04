@@ -4,6 +4,7 @@ from scipy.integrate import odeint
 from scipy.signal import find_peaks
 import time
 from multiprocessing import Pool
+from love.utils.lyapunov_exponent import largest_lyapunov_exponent
 
   
 
@@ -22,28 +23,12 @@ def love_dynamics(y, t, p, epsilon, omega):
 
     return [dx1dt, dx2dt]
 
-def largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
-    t = np.arange(0, T, dt)
-    n = len(t)
-    
-    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
 
-    updated_params = params.copy()
-    updated_params[8] = A1 
-    
-    sol1 = odeint(love_dynamics, initial_conditions, t, args=(updated_params, epsilon, omega))
-    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(updated_params, epsilon, omega))
-
-    divergence = np.linalg.norm(sol2 - sol1, axis=1)
-    divergence = np.ma.masked_where(divergence == 0, divergence)
-    lyapunov = 1/n * np.sum(np.log(divergence/delta))
-
-    return lyapunov
 
 def compute_LLE_for_params(param_tuple):
     A1, epsilon = param_tuple
     # print(f"Processing A1: {A1:.4f}, epsilon: {epsilon:.4f}")
-    return largest_lyapunov_exponent(initial_conditions, A1, epsilon, params, omega)
+    return largest_lyapunov_exponent(love_dynamics, initial_conditions, A1, epsilon, params, omega)
 
 
 
@@ -57,7 +42,7 @@ params = [
     1,      # gamma2    =   Reactiveness to appeal of 1 on 2
     2.9,    # bA1       =   Bias coefficient of Romeo (how much Romeo is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
     1,      # bA2       =   Bias coefficient of individual 2
-    0.15,  # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
+    0.15,   # A1        =   Appeal of Romeo (how much Romeo is appealing to their partner)
     0.1,    # A2        =   Appeal of individual 2
     0.08,   # k1        =   Insecurity of Romeo (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
     1.5,    # k2        =   Insecurity of individual 2

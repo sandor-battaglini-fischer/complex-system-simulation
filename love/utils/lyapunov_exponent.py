@@ -12,6 +12,7 @@ between two nearby trajectories in phase space
 # License: MIT
 
 import numpy as np
+from scipy.integrate import odeint
 
 
 def lyapunov_exponent(data, eps=0.0001):
@@ -55,3 +56,20 @@ def lyapunov_exponent(data, eps=0.0001):
 
     return np.mean(lyapunovs)
 
+def largest_lyapunov_exponent(love_dynamics, initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
+    t = np.arange(0, T, dt)
+    n = len(t)
+    
+    perturbed_initial = initial_conditions + np.random.normal(0, delta, len(initial_conditions))
+
+    updated_params = params.copy()
+    updated_params[8] = A1 
+    
+    sol1 = odeint(love_dynamics, initial_conditions, t, args=(updated_params, epsilon, omega))
+    sol2 = odeint(love_dynamics, perturbed_initial, t, args=(updated_params, epsilon, omega))
+
+    divergence = np.linalg.norm(sol2 - sol1, axis=1)
+    divergence = np.ma.masked_where(divergence == 0, divergence)
+    lyapunov = 1/n * np.sum(np.log(divergence/delta))
+
+    return lyapunov
