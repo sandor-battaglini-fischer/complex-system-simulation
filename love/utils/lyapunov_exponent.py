@@ -15,6 +15,20 @@ import numpy as np
 from scipy.integrate import odeint
 
 
+def _input_validation(data, eps):
+    """
+    Input validation for lyapunov_exponent
+    """
+
+    if not isinstance(data, list):
+        raise TypeError(f"Arugment data is not of type list")
+
+    if not isinstance(eps, float):
+        raise TypeError(f"Arugment eps is not of type float")
+
+    if eps < 0:
+        raise ValueError(f"Augment eps is nonnegative")
+
 def lyapunov_exponent(data, eps=0.0001):
     """
     Lyapunov characteristic exponent of a dynamical system.
@@ -24,7 +38,7 @@ def lyapunov_exponent(data, eps=0.0001):
 
     Parameters
     ----------
-    data : series, np.array 
+    data : array-like
         Data for the calculation.
     eps : float
         Threshold. (default 0.0001)
@@ -44,6 +58,8 @@ def lyapunov_exponent(data, eps=0.0001):
            the Perron effects". International Journal of Bifurcation and Chaos. 17 (4): 1079–1107.
     """
 
+    _input_validation(data, eps)
+
     N = len(data)
     lyapunovs = []
     for i in range(N):
@@ -57,6 +73,46 @@ def lyapunov_exponent(data, eps=0.0001):
     return np.mean(lyapunovs)
 
 def largest_lyapunov_exponent(love_dynamics, initial_conditions, A1, epsilon, params, omega, delta=0.0001, T=208, dt=0.02):
+    """
+    Largest Lyapunov characteristic exponent of a dynamical system.
+
+    A quantity that characterizes the rate of separation of infinitesimally close
+    trajectories.
+
+    Parameters
+    ----------
+    love_dynamics : callable
+        love dynamics function.
+    initial_conditions : list
+        List of initial conditions for ODE
+
+    Returns
+    -------
+    lyapunov : float
+        The value of the lyapunovs exponent
+
+    References
+    ----------
+    .. [1] N.V. Kuznetsov; G.A. Leonov (2005). "On stability by the
+           first approximation for discrete systems". Proceedings. 2005 International
+           Conference Physics and Control, 2005. Vol. Proceedings Volume 2005. pp. 596–599.
+
+    .. [2] G.A. Leonov; N.V. Kuznetsov (2007). "Time-Varying Linearization and
+           the Perron effects". International Journal of Bifurcation and Chaos. 17 (4): 1079–1107.
+    """
+
+    if not isinstance(epsilon, float):
+        raise TypeError(f"Arugment epsilon is not of type float")
+
+    if epsilon < 0:
+        raise ValueError(f"Augment epsilon is nonnegative")
+    
+    if not isinstance(delta, float):
+        raise TypeError(f"Arugment epsilon is not of type float")
+
+    if delta < 0:
+        raise ValueError(f"Augment epsilon is nonnegative")
+
     t = np.arange(0, T, dt)
     n = len(t)
     
