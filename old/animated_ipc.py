@@ -13,6 +13,11 @@ num = 0
 
 
 def calculateODE():
+    """Calculates the ODE for the triangular relationship
+
+    Returns:
+        array: array of solve_ivp solutions
+    """
     A = np.array([[axx, axy, bxx, bxy, lxx, lxy],
                   [ayx, ayy, byx, byy, lyx, lyy],
                   [cxx, cxy, dxx, dxy, nxx, nxy],
@@ -27,6 +32,8 @@ def calculateODE():
 
 
 def update_plot():
+    """updates the plot for the triangular relationship
+    """
     sol = calculateODE()
     [t, xa] = [sol.t, sol.y]
 
@@ -152,6 +159,17 @@ yc0 = 0.0   # Initial commitment level for Yorgo
 import time
 
 def random_variation(param, lower=-1, upper=1, step=0.05):
+    """Randomly varies a parameter within a given range
+
+    Args:
+        param (float): parameter to be varied
+        lower (int, optional): lower bound. Defaults to -1.
+        upper (int, optional): upper bound. Defaults to 1.
+        step (float, optional): step size. Defaults to 0.05.
+
+    Returns:
+        _type_: _description_
+    """
     new_param = param + np.random.choice([-step, step])
     if new_param < lower or new_param > upper:
         new_param = param - np.random.choice([-step, step])
@@ -159,6 +177,8 @@ def random_variation(param, lower=-1, upper=1, step=0.05):
 
 # Function to update all parameters
 def update_parameters():
+    """Updates all parameters
+    """
     global axx, axy, bxx, bxy, cxx, cxy, dxx, dxy
     global ayy, ayx, byy, byx, cyy, cyx, dyy, dyx
     global fxy, fyx, gxy, gyx, hxy, hyx
@@ -210,6 +230,13 @@ def update_parameters():
     pyy = random_variation(pyy)
 
 def animate(i, fig, axs):
+    """Animates the triangular relationship
+
+    Args:
+        i (int): iteration
+        fig (figure): figure
+        axs (int): axes to work on
+    """
     update_parameters()
     sol = calculateODE()
     [t, xa] = [sol.t, sol.y]

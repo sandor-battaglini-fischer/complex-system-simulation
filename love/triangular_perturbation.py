@@ -9,6 +9,18 @@ lover2 = "Lover"
 
 # Kathe's reaction function to love from Jules
 def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
+    """Kathe's reaction function to love from Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauI12 (float): insecurity threshold for Kathe's reaction to Jules' love
+        sigmaL12 (float): sensitivity of reaction to love for Kathe to Jules
+        sigmaI12 (float): sensitivity of insecurity for Kathe to Jules
+        beta12 (float): reaction coefficient to love for Kathe to Jules love(years^-1)
+
+    Returns:
+        float: Kathe's reaction function to love from Jules
+    """
     if x21 >= tauI12:
         return beta12 * x21 / (1 + x21/sigmaL12) * (1 - ((x21 - tauI12) / sigmaI12)**2) / (1 + ((x21 - tauI12) / sigmaI12)**2)
     else:
@@ -16,6 +28,17 @@ def RL12(x21, tauI12, sigmaL12, sigmaI12, beta12):
 
 # Synergism function of Kathe (j=2,3)
 def S(x1j, tau_S, sigmaS, s):
+    """Synergism function of Kathe (j=2,3)
+
+    Args:
+        x1j (float): love from Jules or Jim
+        tau_S (float): synergism threshold for Kathe
+        sigmaS (float): sensitivity of synergism for Kathe
+        s (float): synergism coefficient for Kathe
+
+    Returns:
+        float: Synergism function of Kathe
+    """
     if x1j >= tau_S:
         return s*((x1j - tau_S) / sigmaS)**2 / (1 + ((x1j - tau_S) / sigmaS)**2)
     else:
@@ -23,6 +46,17 @@ def S(x1j, tau_S, sigmaS, s):
 
 # Platonicity function as defined by Jules
 def P(x21, tauP, p, sigmaP):
+    """Platonicity function as defined by Jules
+
+    Args:
+        x21 (float): love from Jules
+        tauP (float): platonicity threshold for Jules
+        p (float): maximum platonicity for Jules
+        sigmaP (float): sensitivity of platonicity for Jules
+
+    Returns:
+        float: Platonicity function as defined by Jules
+    """
     if x21 >= tauP:
         return p*((x21 - tauP) / sigmaP)**2 / (1 + ((x21 - tauP) / sigmaP)**2)
     else:
@@ -30,12 +64,34 @@ def P(x21, tauP, p, sigmaP):
 
 # Jim's reaction function to love from Kathe
 def RL31(x13, tauI31, beta31, sigmaL31, sigmaI31):
+    """Jim's reaction function to love from Kathe
+
+    Args:
+        x13 (float): love from Kathe
+        tauI31 (float): insecurity threshold for Jim's reaction to love
+        beta31 (float): reaction coefficient to love for Jim
+        sigmaL31 (float): sensitivity of reaction to love for Jim
+        sigmaI31 (float): sensitivity of insecurity for Jim
+
+    Returns:
+        float: Jim's reaction function to love from Kathe
+    """
     if x13 >= tauI31:
         return beta31 * x13 / (1 + x13/sigmaL31) * (1 - ((x13 - tauI31) / sigmaI31)**2) / (1 + ((x13 - tauI31) / sigmaI31)**2)
     else:
         return beta31 * x13 / (1 + x13/sigmaL31)
 
 def love_dynamics(y, t, params):
+    """Love dynamics of Kathe, Jules, and Jim
+
+    Args:
+        y (list): list of data
+        t (list): list of time data
+        params (list): list of parameters
+
+    Returns:
+        list: list of love dynamics
+    """
     x12, x13, x21, x31 = y
     alpha1, alpha2, alpha3, beta21, beta12, beta13, beta31, gamma1, gamma2, gamma3, epsilon, delta, A1, A2, A3, tauI12, sigmaL12, sigmaI12, tau_S, sigmaS, tauP, p, sigmaP, tauI31, sigmaL31, sigmaI31, s = params
 
@@ -108,6 +164,13 @@ def perturb_parameters(params, perturbations):
 
 
 def plot_love_dynamics(t, solution, perturbed_solution):
+    """Plot the love dynamics of the central partner and the two lovers
+
+    Args:
+        t (list): list of time data
+        solution (array): array of love dynamics
+        perturbed_solution (array): array of perturbed love dynamics
+    """
     fig, axs = plt.subplots(3, 2, figsize=(12, 12))
     x12, x13, x21, x31 = solution.T
     px12, px13, px21, px31 = perturbed_solution.T

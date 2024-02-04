@@ -12,6 +12,15 @@ num = 0
 
 
 def calculateODE(initial_conditions, params):
+    """calculates the ordinary differential equation
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        params (list): list of parameters
+
+    Returns:
+        array: solution data of the ordinary differential equation
+    """
     A = np.array([[axx, axy, bxx, bxy, lxx, lxy],
                   [ayx, ayy, byx, byy, lyx, lyy],
                   [cxx, cxy, dxx, dxy, nxx, nxy],
@@ -25,6 +34,18 @@ def calculateODE(initial_conditions, params):
 
 
 def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, dt=0.02):
+    """calculates the largest lyapunov exponent
+
+    Args:
+        initial_conditions (list): list of initial conditions
+        params (list): list of parameters
+        delta (float, optional): delta value . Defaults to 0.0001.
+        T (int, optional): length of time to calculate. Defaults to 208.
+        dt (float, optional): delta time. Defaults to 0.02.
+
+    Returns:
+        int: largest lyapunov exponent
+    """
     t = np.arange(0, T, dt)
     n = len(t)
 
@@ -43,6 +64,8 @@ def largest_lyapunov_exponent(initial_conditions, params, delta=0.0001, T=208, d
 
 
 def update_plot():
+    """Updates plot
+    """
     sol = calculateODE(initial_conditions, params)
     [t, xa] = [sol.t, sol.y]
 

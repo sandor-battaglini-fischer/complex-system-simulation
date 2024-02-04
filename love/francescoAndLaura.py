@@ -6,6 +6,16 @@ from ipywidgets import GridBox, Layout, interactive_output
 from IPython.display import display
 
 def love_dynamics(y, t, p):
+    """differential equation model
+
+    Args:
+        y (array): arrya of initial conditions
+        t (array): time intervals
+        p (array): parameters to use
+
+    Returns:
+        array: array of differential equation results
+    """
     x1, x2 = y
     alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2, delta1, delta2, epsilon1, epsilon2, mu1, mu2, z1, z2 = p
 
@@ -31,6 +41,36 @@ slider_style = {'description_width': 'initial'}
 slider_layout = Layout(width='auto')
 
 def update_plot(alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2, delta1, delta2, epsilon1, epsilon2, mu1, mu2, z1, z2):
+    """draw and update the plot
+
+    Args:
+        alpha1 (float): Forgetting coefficient 1 (decay rate of love of individual 1 in absence of partner)
+        alpha2 (float): Forgetting coefficient 2
+        beta1 (float): Reactiveness to love of 2 on 1 (influence of the partner's love on an individual's feelings)
+        beta2 (float): Reactiveness to love of 1 on 2
+        gamma1 (float): Reactiveness to appeal of 2 on 1 (influence of the partner's appeal on an individual's feelings)
+        gamma2 (float): Reactiveness to appeal of 1 on 2
+        bA1 (float): Bias coefficient of individual 1 (how much individual 1 is biased towards their partner, > 0 for synergic, 0 for unbiased, < 0 for platonic)
+        bA2 (float): Bias coefficient of individual 2
+        A1 (float): Appeal of individual 1 (how much individual 1 is appealing to their partner)
+        A2 (float): Appeal of individual 2
+        k1 (float): Insecurity of individual 1 (Peak of reaction function of 1 on 2, high k1 means they are annoyed by their partner's love earlier)
+        k2 (float): Insecurity of individual 2
+        n1 (float): Shape of reaction function of 1 on 2 (nonlinearity of reaction function of 1 on 2, sensitivity of the individuals' feelings to changes in their partner's feelings)
+        n2 (float): Shape of reaction function of 2 on 1
+        m1 (float): Shape of bias function of 1 (nonlinearity of bias function of 1, sensitivity of how the own feelings influence their perception of their partner's appeal)
+        m2 (float): Shape of bias function of 2
+        sigma1 (float): Saddle quantity of 1 (Trace of Jabobian of 1, threshold of when own feelings influence their perception of their partner's appeal. > 0 for stable, < 0 for unstable)
+        sigma2 (float): Saddle quantity of 2
+        delta1 (float): Distraction factor 1 (inhibition of love by inspiration of individual 1)
+        delta2 (float): Distraction factor 2
+        epsilon1 (float): Inhibition factor 1 (inhibition of inspiration by love of individual 1)
+        epsilon2 (float): Inhibition factor 2
+        mu1 (float): Love to inspiration factor 1 (strength of the influence of love on inspiration of individual 1)
+        mu2 (float): Love to inspiration factor 2
+        z1 (float): Initial inspiration 1 (initial value of inspiration of individual 1)
+        z2 (float): Initial inspiration 2
+    """
     params = [alpha1, alpha2, beta1, beta2, gamma1, gamma2, bA1, bA2, A1, A2, k1, k2, n1, n2, m1, m2, sigma1, sigma2, delta1, delta2, epsilon1, epsilon2, mu1, mu2, z1, z2]
     solution = odeint(love_dynamics, initial_conditions, t, args=(params,))
     
