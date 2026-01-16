@@ -1,12 +1,13 @@
 # Romantic Chaos: A study of the emergence of unpredictability in relationships
 As part of the course "Complex System Simulation" - University of Amsterdam 2024
+
 Used to support the final presentation of the project. This includes creating grpahs, visualizations and animations, as well as to get a deeper understanding of the model and the dynamics of the model. 
 
 ### License:
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
-This repository contains Python scripts to create graphs for our final presentation. TO be able to run the scripts see the requirements below. By clicking on the run option in the .py file or running each cell in the .ipynb file, the graphs will be created. 
+This repository contains Python scripts to create graphs for our final presentation. To be able to run the scripts see the requirements below. By clicking on the run option in the .py file or running each cell in the .ipynb file, the graphs will be created. 
 
 ## File Descriptions
 
